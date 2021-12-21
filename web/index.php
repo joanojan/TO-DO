@@ -10,6 +10,7 @@ define('WEB_ROOT', substr($_SERVER['SCRIPT_NAME'], 0, strpos($_SERVER['SCRIPT_NA
 define('ROOT_PATH', realpath(dirname(__FILE__) . '/../'));
 // defines the cms path
 define('CMS_PATH', ROOT_PATH . '/lib/base/');
+var_dump(WEB_ROOT,ROOT_PATH, __FILE__, CMS_PATH);
 
 // starts the session
 session_start();
@@ -25,7 +26,7 @@ function autoloader($className) {
 	// controller autoloading
 	if (strlen($className) > 10 && substr($className, -10) == 'Controller') {
 		if (file_exists(ROOT_PATH . '/app/controllers/' . $className . '.php') == 1) {
-			require_once ROOT_PATH . '/app/controllers/' . $className . '.php';
+		require_once ROOT_PATH . '/app/controllers/' . $className . '.php';
 		}
 	}
 	else {
