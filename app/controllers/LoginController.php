@@ -11,4 +11,9 @@ class LoginController extends ApplicationController
 	{
 		echo "hello from login::check";
 	}
+
+	public function welcomeAction()
+	{
+		$this->view->message = "login::welcome";
+	}
 }

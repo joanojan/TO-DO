@@ -1,3 +1,12 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+</head>
+<body>
+
 <?php
 
 include_once(ROOT_PATH . '/app/controllers/ApplicationController.php');
@@ -10,11 +19,14 @@ $userData[1] = htmlspecialchars($_POST["password"]);
 
 if($controller->processLogin($userData)){
     //TODO redirect to or render point of entry
-    echo "Login amb èxit. Benvingut/da " . $controller->getUser()->getName() . PHP_EOL;
+    echo "<h1>Login amb èxit. Benvingut/da " . $controller->getUser()->getName() . "</h1>" . PHP_EOL;
 } else {
    //TODO redirect to login with error
-   echo "Usuari/Contrassenya incorrectes";
+   echo "<h1>Usuari/Contrassenya incorrectes</h1>";
 }
 
 
 ?>
+
+</body>
+</html>

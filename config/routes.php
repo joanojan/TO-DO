@@ -11,6 +11,7 @@
  */
 $routes = array(
 	'/test' => 'test#index',
-	'/login' => 'login#index'
+	'/login' => 'login#index',
+	'/welcome' => 'login#welcome'
 	
 );
