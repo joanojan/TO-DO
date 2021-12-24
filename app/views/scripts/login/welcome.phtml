@@ -9,6 +9,12 @@
 
 <?php
 
+
+// $usuari_contrasenya = new Request();
+// $valors_post = $usuari_contrasenya->getAllParams();
+// var_dump($valors_post);
+
+
 include_once(ROOT_PATH . '/app/controllers/ApplicationController.php');
 //Start general app controller
 $controller = new ApplicationController();
@@ -24,8 +30,6 @@ if($controller->processLogin($userData)){
    //TODO redirect to login with error
    echo "<h1>Usuari/Contrassenya incorrectes</h1>";
 }
-
-
 ?>
 
 </body>
