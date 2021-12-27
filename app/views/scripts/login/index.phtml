@@ -17,7 +17,7 @@
             <div class="border rounded-md border-red-700 font-bold text-red-700 text-center mx-auto max-w-xs p-2 m-2">
                 <?php
                 foreach ($_SESSION["errors"] as $missatge) {
-                    echo $missatge;
+                    echo $missatge . PHP_EOL;
                 }
                 unset($_SESSION["errors"]);
                 ?>
