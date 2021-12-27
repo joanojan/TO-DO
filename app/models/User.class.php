@@ -7,7 +7,7 @@ class User {
     private $name;
 
     public function __construct($userData){
-        $this->id = key($userData);
+        $this->id = $userData["id"];
         $this->user = $userData["user"];
         $this->password = $userData["password"];
         $this->name = $userData["name"];
