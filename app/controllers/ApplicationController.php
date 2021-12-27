@@ -36,5 +36,12 @@ class ApplicationController extends Controller
     public function getUser(){
         return $this->user;
     }
+
+    public function processLogout(){
+        $this->user = null;
+        unset($_SESSION);
+        unset($_COOKIE);
+        session_destroy();
+    }
 	
 }
