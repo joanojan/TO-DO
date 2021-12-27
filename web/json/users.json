@@ -1,15 +1,18 @@
 {
     "1": {
+        "id": 1,
         "user": "jvila",
         "password": "jvila123",
         "name": "Joan Vila"
     },
     "2": {
-        "user": "amatias",
-        "password": "amatias123",
-        "name": "Ana Matías"
+        "id": 2,
+        "user": "ralcalde",
+        "password": "ralcalde123",
+        "name": "Rubén Alcalde"
     },
     "3": {
+        "id": 3,
         "user": "agarcia",
         "password": "agarcia123",
         "name": "Albert Garcia"

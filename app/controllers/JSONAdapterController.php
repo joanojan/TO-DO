@@ -10,9 +10,6 @@ class JSONAdapterController implements DBOperations {
     private $tasksFile = ROOT_PATH . "/web/json/tasks.json";
     private $currentUser = null;
 
-    //private $readUsersFile = fopen($this->usersFile, "r") or die ("Problem opening users database.");
-   // private $readTasksFile = fopen($this->tasksFile, "r") or die ("Problem opening tasks database.");
-
     public function insertTask(){}
     public function editTask(){}
     public function deleteTask(){}
