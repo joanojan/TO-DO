@@ -15,17 +15,21 @@ if (isset($_POST["process-login"])) { //Attempting login
         $_SESSION["loggedUser"]['id'] = $controller->getUser()->getId();
         $_SESSION["loggedUser"]['username'] = $controller->getUser()->getUser();
         $_SESSION["loggedUser"]['name'] = $controller->getUser()->getName();
-        echo "<h1>Login amb èxit. Benvingut/da " . $_SESSION["loggedUser"]['name'] . "</h1>" . PHP_EOL;
     } else {
         //Redirect to login with error. Erase all post variables and logout any users for safety
         unset($_POST);
         $controller->processLogout();
-        session_start();
         $_SESSION["errors"] = array("Dades de login incorrectes per accedir a aquesta pàgina, identifica't.");
         header('Location: ' . WEB_ROOT . '/login');
     }
-} else if (isset($_SESSION["loggedUser"]) && $_SESSION["loggedUser"]['session'] != $_COOKIE['PHPSESSID'] || isset($_POST["logout"])) { //The logged user session is different than the current session or user wants to log out
+} else if (isset($_POST["logout"])){//User wants to log out
     $controller->processLogout();
+    $_SESSION["messages"] = ["Sessió tancada correctament. Fins aviat!"];
+    header('Location: ' . WEB_ROOT . '/login');
+} else if(isset($_SESSION["loggedUser"]) && $_SESSION["loggedUser"]['session'] != $_COOKIE['PHPSESSID'] || !isset($_SESSION["loggedUser"])) { //The logged user session is different than the current session or no one is logged in
+    $controller->processLogout();
+    $_SESSION["errors"] = array("La sessió ha caducat o hi ha hagut algun altre tipus d'error d'identificació.");
+    header('Location: ' . WEB_ROOT . '/login');
 } else if (isset($_SESSION["loggedUser"]) && $_SESSION["loggedUser"]['session'] == $_COOKIE['PHPSESSID']) { //User is already logged in. Should be unset upon "log out" button push.
     //Proceed to execute the rest of this file.
 }
@@ -49,12 +53,12 @@ if (isset($_POST["process-login"])) { //Attempting login
         </div>
 
         <div class="bg-yellow-500 text-white p-4 flex place-items-center justify-center shrink-0 min-w-fit ">
-            <h1> Hola, <?php echo "Joan Vila"; //$controller->getUser()->getName();
-                        ?>
-            </h1>
+            <h1> Hola, <br> <?php echo $_SESSION["loggedUser"]["name"]; ?></h1>
         </div>
 
         <div class="bg-yellow-400 text-white p-4 flex place-items-center justify-center shrink-0 min-w-fit">
-            <input type="submit" name="logout" value="Tancar sessió" class="border rounded-md bg-red-500 text-white text-justify align-center p-2 m-2 place-self-center">
+            <form action="" method="post">
+                <input type="submit" name="logout" value="Tancar sessió" class="border rounded-md bg-red-500 hover:bg-red-600 hover:shadow-md text-white text-justify align-center p-2 m-2 place-self-center">
+            </form>
         </div>
     </header>

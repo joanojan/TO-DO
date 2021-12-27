@@ -39,9 +39,11 @@ class ApplicationController extends Controller
 
     public function processLogout(){
         $this->user = null;
+        unset($_POST["logout"]);
         unset($_SESSION);
         unset($_COOKIE);
         session_destroy();
+        session_start();
     }
 	
 }
