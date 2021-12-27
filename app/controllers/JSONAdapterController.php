@@ -4,9 +4,10 @@ include_once(ROOT_PATH . "/app/controllers/DBOperations.php");
  * This adapter translates code in our app to a format valid to store to and retrieve from a JSON file.
  * @author Albert Garcia
  */
-class JSONAdapterController implements DBOperations {
+class JSONAdapterController implements DBOperations
+{
 
-    private $usersFile = ROOT_PATH. "/web/json/users.json";
+    private $usersFile = ROOT_PATH . "/web/json/users.json";
     private $tasksFile = ROOT_PATH . "/web/json/tasks.json";
     private $currentUser = null;
 
@@ -16,20 +17,25 @@ class JSONAdapterController implements DBOperations {
      * @param array task data fetched from the create task form view, namely the task content ("task") and user who submitted it ("name")
      * @author Albert Garcia
      */
-    public function insertTask($task){
-        $allTasks = $this->loadAllTasks();
-        $lastId = $allTasks[count($allTasks)-1]["id"];//fetch last id from the tasks file
-        $newTask["id"] = $lastId++;//Add 1 to last id
-        $creationTime = new DateTime();//Current timestamp
-        $newTask["timestampStart"] = $creationTime->format("l, j/M/y H:i");//Creation timestamp, format like "Wed, 3/Nov/21 18:45"
-        $newTask["timestampEnd"] = "Pendent";//Newly created, can't have a finished time yet
-        $newTask["task"] = $task["task"];//Contents of the task
-        $newTask["name"] = $task["name"];//User who created the task
-        $newTask["status"] = "Pending";//Newly created, pending by default
-        array_push($allTasks,$newTask);
-        $encodedTasks = json_encode($allTasks);
-        file_put_contents($this->tasksFile,$encodedTasks);
-        $_SESSION["messages"] = ["Tasca creada correctament!\n"];//Envia missatge per mostrar a la vista corresponent
+    public function insertTask($task)
+    {
+        try {
+            $allTasks = $this->loadAllTasks();
+            $lastId = $allTasks[count($allTasks) - 1]["id"]; //fetch last id from the tasks file
+            $newTask["id"] = $lastId++; //Add 1 to last id
+            $creationTime = new DateTime(); //Current timestamp
+            $newTask["timestampStart"] = $creationTime->format("l, j/M/y H:i"); //Creation timestamp, format like "Wed, 3/Nov/21 18:45"
+            $newTask["timestampEnd"] = "Pendent"; //Newly created, can't have a finished time yet
+            $newTask["task"] = $task["task"]; //Contents of the task
+            $newTask["name"] = $task["name"]; //User who created the task
+            $newTask["status"] = "Pending"; //Newly created, pending by default
+            array_push($allTasks, $newTask);
+            $encodedTasks = json_encode($allTasks);
+            file_put_contents($this->tasksFile, $encodedTasks);
+            $_SESSION["messages"] = ["Tasca creada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
+        } catch (Exception $e) {
+            $_SESSION["errors"] = ["S'ha produït un error durant la creació de la tasca.\n" . $e . "\n"];
+        }
     }
 
     /**
@@ -41,34 +47,39 @@ class JSONAdapterController implements DBOperations {
      * @param string status - Status of the task
      * @author Albert Garcia
      */
-    public function editTask($taskId,$task,$status){
-        $allTasks = $this->loadAllTasks();
-        $taskToEdit = [];
-        $taskIndex = null;
+    public function editTask($taskId, $task, $status)
+    {
+        try {
+            $allTasks = $this->loadAllTasks();
+            $taskToEdit = [];
+            $taskIndex = null;
 
-        foreach($allTasks as $currentTask){
-            $found = false;
-            if($currentTask["id"] == $taskId){
+            foreach ($allTasks as $currentTask) {
+                $found = false;
+                if ($currentTask["id"] == $taskId) {
+                    $taskToEdit = $task;
+                    $taskIndex = array_search($currentTask, $allTasks);
+                    $found = true;
+                }
+                if ($found) {
+                    break;
+                }
+            }
+
+            if ($taskToEdit["task"] != $task) {
                 $taskToEdit = $task;
-                $taskIndex = array_search($currentTask,$allTasks);
-                $found = true;
             }
-            if($found){
-                break;
+            if ($taskToEdit["status"] != $status) {
+                $taskToEdit = $status;
             }
-        }
 
-        if($taskToEdit["task"] != $task){
-            $taskToEdit = $task;
+            $allTasks[$taskIndex] = $taskToEdit;
+            $encodedTasks = json_encode($allTasks);
+            file_put_contents($this->tasksFile, $encodedTasks);
+            $_SESSION["messages"] = ["Tasca modificada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
+        } catch (Exception $e) {
+            $_SESSION["errors"] = ["S'ha produït un error durant l'edició de la tasca.\n" . $e . "\n"];
         }
-        if($taskToEdit["status"] != $status){
-            $taskToEdit = $status;
-        }
-
-        $allTasks[$taskIndex] = $taskToEdit;
-        $encodedTasks = json_encode($allTasks);
-        file_put_contents($this->tasksFile,$encodedTasks);
-        $_SESSION["messages"] = ["Tasca modificada correctament!\n"];//Envia missatge per mostrar a la vista corresponent
     }
 
     /**
@@ -77,18 +88,24 @@ class JSONAdapterController implements DBOperations {
      * takes it out of the array, and writes the rest of tasks to file.
      * @param int taskId - the ID of the task to delete
      */
-    public function deleteTask($taskId){
-        $allTasks = $this->loadAllTasks();
-        $taskToDelete = array_search($taskId, array_column($allTasks, 'id'));
-        unset($allTasks[$taskToDelete]);
-        
-        $encodedTasks = json_encode($allTasks);
-        file_put_contents($this->tasksFile,$encodedTasks);
-        $_SESSION["messages"] = ["Tasca eliminada correctament!\n"];//Envia missatge per mostrar a la vista corresponent
+    public function deleteTask($taskId)
+    {
+        try {
+            $allTasks = $this->loadAllTasks();
+            $taskToDelete = array_search($taskId, array_column($allTasks, 'id'));
+            unset($allTasks[$taskToDelete]);
+
+            $encodedTasks = json_encode($allTasks);
+            file_put_contents($this->tasksFile, $encodedTasks);
+            $_SESSION["messages"] = ["Tasca eliminada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
+        } catch (Exception $e) {
+            $_SESSION["errors"] = ["S'ha produït un error durant l'eliminació de la tasca.\n" . $e . "\n"];
+        }
     }
 
-    public function findTask(){
-        
+    public function findTask()
+    {
+        //TODO
     }
 
     /**
@@ -99,31 +116,32 @@ class JSONAdapterController implements DBOperations {
      * @return object boolean true if user exists, false if not
      * @author Albert Garcia
      */
-    public function checkLoginData($userData){
+    public function checkLoginData($userData)
+    {
 
-        $user = ["user"=>$userData[0], "password"=>$userData[1]];
+        $user = ["user" => $userData[0], "password" => $userData[1]];
 
         $allUsersStr = file_get_contents($this->usersFile);
-        $allUsersArr = json_decode($allUsersStr, true);        
+        $allUsersArr = json_decode($allUsersStr, true);
 
-        foreach($allUsersArr as $userRecord){
-            if ($userRecord["user"] == $user["user"] && $userRecord["password"] == $user["password"]){
+        foreach ($allUsersArr as $userRecord) {
+            if ($userRecord["user"] == $user["user"] && $userRecord["password"] == $user["password"]) {
                 $this->currentUser = $userRecord;
                 return true;
             }
         }
-        
-        return false;
 
+        return false;
     }
 
     /**
      * Loads all tasks on json file. Returns them as an associative array.
      * @return array Array of tasks.
      */
-    public function loadAllTasks(){
+    public function loadAllTasks()
+    {
         $allTasksStr = file_get_contents($this->tasksFile);
-        $allTasksArr = json_decode($allTasksStr, true); 
+        $allTasksArr = json_decode($allTasksStr, true);
         return $allTasksArr;
     }
 
@@ -139,8 +157,3 @@ class JSONAdapterController implements DBOperations {
         return $this->currentUser;
     }
 }
-
-
-
-
-?>
