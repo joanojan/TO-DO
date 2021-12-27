@@ -3,34 +3,39 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Welcome</title>
 </head>
 <body>
+<?php include (ROOT_PATH . '/app/views/scripts/header.php') ?>
 
-<?php
+<div class="m-16">
+    <ul>
+        <li>
+            <button type="button" class="my-8 rounded border border-black m-2 p-2 hover:bg-gray-600 hover:text-white">
+                Crear nova tasca
+            </button>
+        </li>
+        <li>
+            <button type="button" class="my-8 rounded border border-black m-2 p-2 hover:bg-gray-600 hover:text-white">
+                Mostra llistat de tasques
+            </button>
+        </li>
+        <form>
+        <div>
+            <label for="cerca" class="m-2 p-2">cerca tasca per nom:</label>
+        </div>
+        <div>
+            <input id="cerca" type="text" name="text" class="rounded border border-black m-2 p-2">
+            <input type="submit" value="Send" class="m-2 p-2 rounded border border-black bg-yellow-600 hover:bg-gray-600 text-white">
+        </div>
+
+</form>
+    </ul>
+</div>
 
 
-// $usuari_contrasenya = new Request();
-// $valors_post = $usuari_contrasenya->getAllParams();
-// var_dump($valors_post);
 
-
-include_once(ROOT_PATH . '/app/controllers/ApplicationController.php');
-//Start general app controller
-$controller = new ApplicationController();
-
-//Read the data sent by the form on /login/index
-$userData[0] = htmlspecialchars($_POST["username"]);
-$userData[1] = htmlspecialchars($_POST["password"]);
-
-if($controller->processLogin($userData)){
-    //TODO redirect to or render point of entry
-    echo "<h1>Login amb èxit. Benvingut/da " . $controller->getUser()->getName() . "</h1>" . PHP_EOL;
-} else {
-   //TODO redirect to login with error
-   echo "<h1>Usuari/Contrassenya incorrectes</h1>";
-}
-?>
-
+<?php include (ROOT_PATH . '/app/views/scripts/footer.php') ?>
 </body>
 </html>
