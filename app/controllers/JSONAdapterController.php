@@ -10,10 +10,86 @@ class JSONAdapterController implements DBOperations {
     private $tasksFile = ROOT_PATH . "/web/json/tasks.json";
     private $currentUser = null;
 
-    public function insertTask(){}
-    public function editTask(){}
-    public function deleteTask(){}
-    public function findTask(){}
+    /**
+     * Inserts a new task at the end of the tasks json files. To do so, it loads all entries as an array, adds the new 
+     * task as an array at the end from the parameter, encodes to json and writes all contents to the task file again.
+     * @param array task data fetched from the create task form view, namely the task content ("task") and user who submitted it ("name")
+     * @author Albert Garcia
+     */
+    public function insertTask($task){
+        $allTasks = $this->loadAllTasks();
+        $lastId = $allTasks[count($allTasks)-1]["id"];//fetch last id from the tasks file
+        $newTask["id"] = $lastId++;//Add 1 to last id
+        $creationTime = new DateTime();//Current timestamp
+        $newTask["timestampStart"] = $creationTime->format("l, j/M/y H:i");//Creation timestamp, format like "Wed, 3/Nov/21 18:45"
+        $newTask["timestampEnd"] = "Pendent";//Newly created, can't have a finished time yet
+        $newTask["task"] = $task["task"];//Contents of the task
+        $newTask["name"] = $task["name"];//User who created the task
+        $newTask["status"] = "Pending";//Newly created, pending by default
+        array_push($allTasks,$newTask);
+        $encodedTasks = json_encode($allTasks);
+        file_put_contents($this->tasksFile,$encodedTasks);
+        $_SESSION["messages"] = ["Tasca creada correctament!\n"];//Envia missatge per mostrar a la vista corresponent
+    }
+
+    /**
+     * Edit the contents of an existing task. Either the task, the status or both can be changed at any
+     * given time. Loads all tasks as an array, looks for the task with the same id as the parameter, and if any data is different,
+     * it changes it, to then save all tasks back again on file.
+     * @param int taskId - id of the task to change
+     * @param string task - Contents of the task text
+     * @param string status - Status of the task
+     * @author Albert Garcia
+     */
+    public function editTask($taskId,$task,$status){
+        $allTasks = $this->loadAllTasks();
+        $taskToEdit = [];
+        $taskIndex = null;
+
+        foreach($allTasks as $currentTask){
+            $found = false;
+            if($currentTask["id"] == $taskId){
+                $taskToEdit = $task;
+                $taskIndex = array_search($currentTask,$allTasks);
+                $found = true;
+            }
+            if($found){
+                break;
+            }
+        }
+
+        if($taskToEdit["task"] != $task){
+            $taskToEdit = $task;
+        }
+        if($taskToEdit["status"] != $status){
+            $taskToEdit = $status;
+        }
+
+        $allTasks[$taskIndex] = $taskToEdit;
+        $encodedTasks = json_encode($allTasks);
+        file_put_contents($this->tasksFile,$encodedTasks);
+        $_SESSION["messages"] = ["Tasca modificada correctament!\n"];//Envia missatge per mostrar a la vista corresponent
+    }
+
+    /**
+     * Deletes the selected task from the file based on its id passed by parameter.
+     * Loads all tasks, searches for the task with the id of the one to be erased, 
+     * takes it out of the array, and writes the rest of tasks to file.
+     * @param int taskId - the ID of the task to delete
+     */
+    public function deleteTask($taskId){
+        $allTasks = $this->loadAllTasks();
+        $taskToDelete = array_search($taskId, array_column($allTasks, 'id'));
+        unset($allTasks[$taskToDelete]);
+        
+        $encodedTasks = json_encode($allTasks);
+        file_put_contents($this->tasksFile,$encodedTasks);
+        $_SESSION["messages"] = ["Tasca eliminada correctament!\n"];//Envia missatge per mostrar a la vista corresponent
+    }
+
+    public function findTask(){
+        
+    }
 
     /**
      * It receives the username and password as an array $userData.
@@ -39,6 +115,16 @@ class JSONAdapterController implements DBOperations {
         
         return false;
 
+    }
+
+    /**
+     * Loads all tasks on json file. Returns them as an associative array.
+     * @return array Array of tasks.
+     */
+    public function loadAllTasks(){
+        $allTasksStr = file_get_contents($this->tasksFile);
+        $allTasksArr = json_decode($allTasksStr, true); 
+        return $allTasksArr;
     }
 
     /**
