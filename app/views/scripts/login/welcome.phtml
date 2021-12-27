@@ -1,41 +1,52 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>Welcome</title>
-</head>
-<body>
-<?php include (ROOT_PATH . '/app/views/scripts/header.php') ?>
+<?php
+include(ROOT_PATH . '/app/views/scripts/header.php');
+?>
 
-<div class="m-16">
-    <ul>
-        <li>
-            <button type="button" class="my-8 rounded border border-black m-2 p-2 hover:bg-gray-600 hover:text-white">
-                Crear nova tasca
-            </button>
+
+<div class="m-16 max-w-min ">
+    <ul class="grid grid-rows-auto place-items-center gap-2">
+        <li class="min-w-full">
+            <form action="" method="post" >
+                <input type="submit" name="loadAllTasks" class="my-8 rounded border border-black p-2 bg-yellow-600 hover:bg-gray-600 text-white min-w-full" value="Mostra totes les tasques">
+            </form>
         </li>
         <li>
-            <button type="button" class="my-8 rounded border border-black m-2 p-2 hover:bg-gray-600 hover:text-white">
-                Mostra llistat de tasques
-            </button>
+            <div>
+                <form action="" method="post" class="border rounded-md border-yellow-600 shadow shadow-yellow-600 shadow-sm grid grid-rows-auto gap-0">
+                    <label for="task" class="p-2">Nova tasca:</label>
+                    <input type="text" name="task" class="border rounded-md border-yellow-500 p-2 m-2">
+                    <input type="submit" name="insertTask" class="my-8 rounded border border-black m-2 p-2 hover:bg-gray-600 hover:text-white" value="Crear nova tasca">
+                </form>
+            </div>
         </li>
-        <form>
-        <div>
-            <label for="cerca" class="m-2 p-2">cerca tasca per nom:</label>
-        </div>
-        <div>
-            <input id="cerca" type="text" name="text" class="rounded border border-black m-2 p-2">
-            <input type="submit" value="Send" class="m-2 p-2 rounded border border-black bg-yellow-600 hover:bg-gray-600 text-white">
-        </div>
+        <li>
+        <form action="" method="post" class="border rounded-md border-yellow-600 shadow shadow-yellow-600 shadow-sm grid grid-rows-auto gap-0">
+                <div>
+                    <p class="p-2 bg-yellow-500 border border-yellow-500 rounded-t-md">Cercador</p>
+                </div>
+                <div>
+                    <label for="task" class="p-2">La tasca conté:</label>
+                    <input type="text" name="task" class="rounded border border-black m-2 p-1">
+                    <label for="name" class="p-2">Autor de la tasca:</label>
+                    <input type="text" name="name" class="rounded border border-black m-2 p-1">
+                    <label for="status" class="p-2">Estat de la tasca</label>
+                    <select name="status" class="rounded border border-black m-2 p-1">
+                        <option value="pending">Pendent</option>
+                        <option value="in-progress">En execució</option>
+                        <option value="finished">Finalitzada</option>                       
+                    </select>
+                    <input type="submit" value="Cerca" class="m-2 p-2 rounded border border-black bg-yellow-600 hover:bg-gray-600 text-white">
+                </div>
 
-</form>
+            </form>
+        </li>
+
     </ul>
 </div>
 
 
 
-<?php include (ROOT_PATH . '/app/views/scripts/footer.php') ?>
+<?php include(ROOT_PATH . '/app/views/scripts/footer.php') ?>
 </body>
+
 </html>
