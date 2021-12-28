@@ -10,7 +10,6 @@ define('WEB_ROOT', substr($_SERVER['SCRIPT_NAME'], 0, strpos($_SERVER['SCRIPT_NA
 define('ROOT_PATH', realpath(dirname(__FILE__) . '/../'));
 // defines the cms path
 define('CMS_PATH', ROOT_PATH . '/lib/base/');
-var_dump(WEB_ROOT,ROOT_PATH, __FILE__, CMS_PATH);
 
 // starts the session
 session_start();
@@ -47,3 +46,8 @@ spl_autoload_register('autoloader');
 
 $router = new Router();
 $router->execute($routes);
+
+
+$ov=0;
+
+?>

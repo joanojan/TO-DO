@@ -1,1 +1,13 @@
 content from the test/index.phtml file :)
+
+<?php
+//Tests lectura de dades de logins usuaris amb JSON
+include_once(ROOT_PATH . '/app/controllers/ApplicationController.php');
+$controller = new ApplicationController();
+$userData = ["jvila", "jvila123"];//Aquestes dades haurien de venir del formulari de login al premer el botó login,
+//potencialment afegir mode de connexió quan n'hi hagi més d'un segons el que es marqui amb botons de radi
+
+$controller->processLogin($userData);//comprova si usuari existeix i carrega un usuari nou si es aixi amb les seves dades
+var_dump($controller->getUser());//contingut objecte instancia usuari dins del controlador
+//Fi tests
+?>
