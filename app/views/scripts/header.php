@@ -3,11 +3,6 @@
 $controller = new ApplicationController();
 //Check login status
 $controller->checkLoginStatus();
-//Are there any errors or messages to display?
-$hide = "hidden";
-if (isset($_SESSION["messages"]) || isset($_SESSION["errors"])) {
-    $hide = "";
-}
 //Load all tasks?
 if (isset($_POST["loadAllTasks"])) {
     $_SESSION["tasks"] = $controller->connect()->loadAllTasks();
@@ -19,6 +14,18 @@ if (isset($_POST["insertTask"])) {
         "name" => $_SESSION["loggedUser"]["name"]
     ];
     $controller->connect()->insertTask($task);
+}
+//Delete a task?
+if (isset($_POST["deleteTask"])) {
+    $arrayIndex = array_key_first($_POST); //Fetch the name of the element in the POST array, as it's dynamic
+    $index = strpos($arrayIndex, "-") + 1; //Set the index where first number of id occurs
+    $taskId = substr($arrayIndex, $index); //Extract the number
+    $controller->connect()->deleteTask($taskId);
+}
+//Are there any errors or messages to display?
+$hide = "hidden";
+if (isset($_SESSION["messages"]) || isset($_SESSION["errors"])) {
+    $hide = "";
 }
 //Finally, unset all POST requests
 unset($_POST);
@@ -69,7 +76,7 @@ unset($_POST);
         </div>
         <!--Messages to the user-->
     </header>
-    <div class="<?= $hide ?> m-4 p-4 w-1/3 h-[7%] absolute inset-x-0 top-0 opacity-40 bg-white/40 rounded-md shadow shadow-lg shadow-white mx-auto border border-white">
+    <div class="<?= $hide ?> m-4 p-4 w-1/3 h-[7%] absolute inset-x-0 top-0 opacity-40 bg-white/80 rounded-md shadow shadow-lg mx-auto border border-white">
     </div>
     <div class="<?= $hide ?> m-4 p-2 w-1/3 h-[7%] absolute inset-x-0 top-0  mx-auto flex flex-auto flex-nowrap place-items-center">
         <p class="text-green-900 align-middle">
@@ -81,7 +88,9 @@ unset($_POST);
                     </span>';
                     echo $message;
                 }
-                unset($_SESSION["messages"]);
+                if (isset($_SESSION["loggedUser"])) { //Erase messages only if a user is logged in
+                    unset($_SESSION["messages"]);
+                }
             }
             ?></p>
         <p class="text-red-900">
@@ -93,7 +102,9 @@ unset($_POST);
                     </span>';
                     echo $message;
                 }
-                unset($_SESSION["errors"]);
+                if (isset($_SESSION["loggedUser"])) { //Erase messages only if a user is logged in
+                    unset($_SESSION["errors"]);
+                }
             }
             ?></p>
     </div>

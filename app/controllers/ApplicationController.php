@@ -123,7 +123,7 @@ class ApplicationController extends Controller
                     <!--Task-->
                     <div class="flex flex-nowrap flex-auto items-center justify-left">
                         <span class="font-icons text-2xl p-2">notes</span>
-                        <p class="whitespace-normal"><?= $task["task"]; ?></p>
+                        <p class="whitespace-normal font-overpass text-xl"><?= $task["task"]; ?></p>
                     </div>
                     <!--Author and start date-->
                     <div class="flex flex-nowrap flex-auto items-center justify-left">

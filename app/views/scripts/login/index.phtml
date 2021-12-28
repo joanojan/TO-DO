@@ -28,7 +28,7 @@
         <?php
         //Mostra possibles missatges d'error relacionats amb el login
         if (isset($_SESSION["errors"])) { ?>
-            <div class="border bg-white rounded-md border-red-700 font-bold text-red-700 text-center mx-auto max-w-xs p-2 m-2">
+            <div class="border rounded-md border-red-700 font-bold text-red-700 text-center mx-auto max-w-xs p-2 m-2 opacity-80 bg-white/80 rounded-md shadow shadow-lg">
                 <?php
                 foreach ($_SESSION["errors"] as $missatge) {
                     echo $missatge . PHP_EOL;
@@ -42,7 +42,7 @@
         <?php
         //Mostra possibles missatges relacionats amb el login
         if (isset($_SESSION["messages"])) { ?>
-            <div class="border bg-white rounded-md border-green-700 font-bold text-green-700 text-center mx-auto max-w-xs p-2 m-2">
+            <div class="border rounded-md border-green-700 font-bold text-green-700 text-center mx-auto max-w-xs p-2 m-2 opacity-80 bg-white/80 rounded-md shadow shadow-lg">
                 <?php
                 foreach ($_SESSION["messages"] as $missatge) {
                     echo $missatge . PHP_EOL;

@@ -22,7 +22,7 @@ class JSONAdapterController implements DBOperations
         try {
             $allTasks = $this->loadAllTasks();
             $lastId = $allTasks[count($allTasks)]["id"]; //fetch last id from the tasks file
-            $newTask["id"] = $lastId+1; //Add 1 to last id
+            $newTask["id"] = $lastId + 1; //Add 1 to last id
             $creationTime = new DateTime(); //Current timestamp
             $newTask["timestampStart"] = $creationTime->format("l, j/M/y H:i"); //Creation timestamp, format like "Wedneday, 3/Nov/21 18:45"
             $newTask["timestampEnd"] = "Pending"; //Newly created, can't have a finished time yet
@@ -32,6 +32,7 @@ class JSONAdapterController implements DBOperations
             array_push($allTasks, $newTask);
             $encodedTasks = json_encode($allTasks);
             file_put_contents($this->tasksFile, $encodedTasks);
+            $_SESSION["tasks"] = $this->loadAllTasks();//Refresh the tasks overview upon insertion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca creada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
             $_SESSION["errors"] = ["S'ha produït un error durant la creació de la tasca.\n" . $e . "\n"];
@@ -92,11 +93,14 @@ class JSONAdapterController implements DBOperations
     {
         try {
             $allTasks = $this->loadAllTasks();
-            $taskToDelete = array_search($taskId, array_column($allTasks, 'id'));
-            unset($allTasks[$taskToDelete]);
-
+            $taskToDelete = array_search($taskId, array_column($allTasks, 'id')); //Find the correct task
+            $key = array_keys($allTasks); //Get the name of the key, as it's a number
+            $index = $key[$taskToDelete]; //Set the actual index that is going to be deleted
+            unset($allTasks[$index]); //Delete
+            //TODO: Might be useful to reform the indexes of the array
             $encodedTasks = json_encode($allTasks);
             file_put_contents($this->tasksFile, $encodedTasks);
+            $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon deletion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca eliminada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
             $_SESSION["errors"] = ["S'ha produït un error durant l'eliminació de la tasca.\n" . $e . "\n"];
