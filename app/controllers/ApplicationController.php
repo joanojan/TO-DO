@@ -118,7 +118,7 @@ class ApplicationController extends Controller
             }
 ?>
             <!--Task card-->
-            <div class="bg-white border border-2 rounded-md shadow shadow-md rounded-md m-2 p-3 grid grid-cols-2">
+            <div class="bg-white border border-2 rounded-md border-<?=$color;?>-700 shadow shadow-md shadow-<?=$color;?>-700 rounded-md m-2 p-3 grid grid-cols-2">
                 <div>
                     <!--Task-->
                     <div class="flex flex-nowrap flex-auto items-center justify-left">
@@ -133,7 +133,7 @@ class ApplicationController extends Controller
                 </div>
                 <div>
                     <!--Status-->
-                    <div class="flex flex-nowrap flex-auto items-center justify-left border border-2 rounded-md bg-<?= $color ?>-700 text-white">
+                    <div class="flex flex-nowrap flex-auto items-center justify-left rounded-md bg-<?= $color ?>-700 text-white">
                         <span class="font-icons text-2xl p-2"><?= $icon ?></span>
                         <p class="whitespace-normal inline"><?= $task["status"] . $finish; ?></p>
                     </div>
