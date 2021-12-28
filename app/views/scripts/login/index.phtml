@@ -6,12 +6,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rock+3D&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                fontFamily: {
+                    'rock3d': ['"Rock 3D"'],
+                }
+            }
+        }
+    </script>
 </head>
 
 <body class="bg-yellow-600">
     <div class="flex flex-col justify-center items-center h-screen">
-        <h1 class="text-3xl">TO-DO</h1>
+        <h1 class="text-5xl font-rock3d">TO-DO</h1>
         <h2 class="mb-4">by Albert&Joan v0.5</h2>
         <?php
         //Mostra possibles missatges d'error relacionats amb el login
@@ -40,7 +52,7 @@
             </div>
         <?php
         }
-        ?>        
+        ?>
         <h1 class="w-full max-w-xs bg-yellow-500 text-3xl text-center font-bold rounded-t-md p-2">Login</h1>
         <form action=<?= WEB_ROOT . "/welcome"; ?> method="post" class="w-full max-w-xs bg-white shadow-md rounded-b-md px-8 pt-6 pb-8 mb-4">
             <input type="text" name="username" placeholder="Username" required class="shadow appearance-none border rounded w-full py-2 px-3 text-yellow-700 leading-tight focus:outline-none focus:shadow-outline"><br>
