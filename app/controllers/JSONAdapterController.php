@@ -73,10 +73,12 @@ class JSONAdapterController implements DBOperations
             if ($taskToEdit["status"] != $status) {
                 $taskToEdit = $status;
             }
+            //TODO add end timestamp if task if marked as finished.
 
             $allTasks[$taskIndex] = $taskToEdit;
             $encodedTasks = json_encode($allTasks);
             file_put_contents($this->tasksFile, $encodedTasks);
+            $_SESSION["tasks"] = $this->loadAllTasks();//Refresh the tasks overview upon insertion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca modificada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
             $_SESSION["errors"] = ["S'ha produït un error durant l'edició de la tasca.\n" . $e . "\n"];

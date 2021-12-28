@@ -108,7 +108,7 @@ class ApplicationController extends Controller
             $color = "red";
             $icon = "flag";
             $finish = "";
-            if ($task["status"] == "In execution") {
+            if ($task["status"] == "In progress") {
                 $icon = "schedule";
                 $color = "amber";
             } else if ($task["status"] == "Finished") {
@@ -142,7 +142,7 @@ class ApplicationController extends Controller
                         <!--Edit-->
                         <form action="" method="post" class="mt-2 mb-2">
                             <input type="hidden" name="edit-<?= $task["id"] ?>">
-                            <button type="submit" name="editTask" class="align-middle rounded-md p-2 mt-2  bg-yellow-600 hover:bg-gray-600 text-white flex flex-nowrap flex-auto items-center justify-around"><span class="font-icons pl-2 pr-2 align-middle">edit</span>Edit</button>
+                            <button type="submit" name="editTask" class="align-middle rounded-md p-2 mt-2  bg-yellow-600 hover:bg-gray-600 text-white flex flex-nowrap flex-auto items-center justify-around <?php if(isset($_SESSION["editingTask"])){echo "hidden";}?>"><span class="font-icons pl-2 pr-2 align-middle">edit</span>Edit</button>
                         </form>
                         <!--Delete-->
                         <form action="" method="post" class="m-2">
