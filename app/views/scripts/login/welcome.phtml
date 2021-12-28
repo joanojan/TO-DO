@@ -1,47 +1,58 @@
 <?php
 include(ROOT_PATH . '/app/views/scripts/header.php');
 ?>
-<!--Left menu-->
-<div id="left-menu" class="m-8 mt-2 max-w-min">
-    <ul class="grid grid-rows-auto place-items-center gap-2">
-        <!--First item: List all-->
-        <li class="min-w-full">
-            <form action="" method="post">
-                <button type="submit" name="loadAllTasks" class="my-8 rounded border border-2 border-black p-2 bg-yellow-600 hover:bg-gray-600 text-white min-w-full shadow shadow-lg">Mostra totes les tasques</button>
-            </form>
-        </li>
-        <!--Second item: Create-->
-        <li>
-            <div>
-                <form action="" method="post" class="border border-2 rounded-md border-yellow-600 shadow shadow-yellow-600 shadow-md grid grid-rows-3 gap-2 bg-white">
-                    <textarea name="task" id="" cols="30" rows="5" class="border rounded-md border-black p-2 m-2 mb-0 font-overpass placeholder:whitespace-normal row-span-2 align-top text-left whitespace-normal" placeholder="Escriu una nova tasca aquí..."></textarea>
-                    <button type="submit" name="insertTask" class="my-8 bg-yellow-600 text-white rounded border border-black mt-0 mb-1.5 m-2 p-2 hover:bg-gray-600 hover:text-white flex flex-nowrap flex-auto items-center justify-around">
-                        <span class="font-icons text-2xl">add_circle</span>Crear nova tasca</button>
+<div class="grid grid-cols-3">
+    <!--Left menu-->
+    <div id="left-menu" class="m-8 mt-2 max-w-min col-span-1">
+        <ul class="grid grid-rows-auto place-items-center gap-2">
+            <!--First item: List all-->
+            <li class="min-w-full">
+                <form action="" method="post">
+                    <button type="submit" name="loadAllTasks" class="my-8 rounded border border-2 border-black p-2 bg-yellow-600 hover:bg-gray-600 text-white min-w-full shadow shadow-lg">Mostra totes les tasques</button>
                 </form>
-            </div>
-        </li>
-        <!--Third item: Search-->
-        <li>
-            <form action="" method="post" class="border border-2 rounded-md border-yellow-600 shadow shadow-yellow-600 shadow-md grid grid-rows-auto gap-0 bg-white">
-                <div class="relative">
-                    <p class="p-2 m-0 bg-yellow-500 border border-2 border-yellow-500 rounded-t-md">Cercador</p>
-                </div>
+            </li>
+            <!--Second item: Create-->
+            <li>
                 <div>
-                    <input type="text" name="task" class="rounded border border-black m-2 p-1" placeholder="La tasca conté...">
-                    <input type="text" name="name" class="rounded border border-black m-2 p-1" placeholder="Autor de la tasca">
-                    <label for="status" class="p-2">Estat de la tasca</label>
-                    <select name="status" class="rounded border border-black m-2 p-1 w-11/12">
-                        <option value="pending">Pendent</option>
-                        <option value="in-progress">En execució</option>
-                        <option value="finished">Finalitzada</option>
-                    </select>
-                    <button type="submit" class="m-2 p-2 rounded border border-black bg-yellow-600 hover:bg-gray-600 text-white flex flex-nowrap flex-auto items-center justify-around w-11/12"><span class="font-icons text-2xl">search</span>Cerca</button>
+                    <form action="" method="post" class="border border-2 rounded-md border-yellow-600 shadow shadow-yellow-600 shadow-md grid grid-rows-3 gap-2 bg-white">
+                        <textarea name="task" id="" cols="30" rows="5" class=" resize-none border rounded-md border-black p-2 m-2 mb-0 font-overpass placeholder:whitespace-normal row-span-2 align-top text-left whitespace-normal" placeholder="Escriu una nova tasca aquí..."></textarea>
+                        <button type="submit" name="insertTask" class="my-8 bg-yellow-600 text-white rounded border border-black mt-0 mb-1.5 m-2 p-2 hover:bg-gray-600 hover:text-white flex flex-nowrap flex-auto items-center justify-around">
+                            <span class="font-icons text-2xl">add_circle</span>Crear nova tasca</button>
+                    </form>
                 </div>
-            </form>
-        </li>
-    </ul>
+            </li>
+            <!--Third item: Search-->
+            <li>
+                <form action="" method="post" class="border border-2 rounded-md border-yellow-600 shadow shadow-yellow-600 shadow-md grid grid-rows-auto gap-0 bg-white">
+                    <div class="relative">
+                        <p class="p-2 m-0 bg-yellow-500 border border-2 border-yellow-500 rounded-t-md">Cercador</p>
+                    </div>
+                    <div>
+                        <input type="text" name="task" class="rounded border border-black m-2 p-1" placeholder="La tasca conté...">
+                        <input type="text" name="name" class="rounded border border-black m-2 p-1" placeholder="Autor de la tasca">
+                        <label for="status" class="p-2">Estat de la tasca</label>
+                        <select name="status" class="rounded border border-black m-2 p-1 w-11/12">
+                            <option value="pending">Pendent</option>
+                            <option value="in-progress">En execució</option>
+                            <option value="finished">Finalitzada</option>
+                        </select>
+                        <button type="submit" class="m-2 p-2 rounded border border-black bg-yellow-600 hover:bg-gray-600 text-white flex flex-nowrap flex-auto items-center justify-around w-11/12"><span class="font-icons text-2xl">search</span>Cerca</button>
+                    </div>
+                </form>
+            </li>
+        </ul>
+    </div>
+    <!--End left menu-->
+    <!--Right menu (tasks)-->
+    <div id="right-menu" class="m-8 col-span-2">
+        <?php if (isset($_SESSION["tasks"])) {
+            ?><h1 class="font-rock3d text-4xl text-white m-2 p-2">TASQUES</h1>
+            <?php
+            $controller->renderTasks();
+        } ?>
+    </div>
+    <!--End of right menu-->
 </div>
-<!--End left menu-->
 
 
 

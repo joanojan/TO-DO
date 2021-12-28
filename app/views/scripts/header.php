@@ -3,6 +3,12 @@
 $controller = new ApplicationController();
 //Check login status
 $controller->checkLoginStatus();
+//Load all tasks?
+if(isset($_POST["loadAllTasks"])){
+    $_SESSION["tasks"] = $controller->connect()->loadAllTasks();
+}
+//Finally, unset all POST requests
+unset($_POST);
 ?>
 <html lang="en">
 
@@ -24,7 +30,7 @@ $controller->checkLoginStatus();
                 fontFamily: {
                     'rock3d': ['"Rock 3D"'],//logo
                     'overpass':['Overpass', 'sans-serif'],//task text
-                    'icons': ['"Material Icons"'],
+                    'icons': ['"Material Icons"'],//icons
                 }
             }
         }
@@ -34,8 +40,8 @@ $controller->checkLoginStatus();
 <body class="bg-[url('../web/images/david-travis-5bYxXawHOQg-unsplash.jpg')] bg-cover bg-blend-saturation">
     <header class="grid grid-cols-8">
         <div class="bg-yellow-600 text-white p-4 col-span-6 text-xl flex items-center shrink">
-            <h1 class="text-sm">
-                <span class="font-rock3d text-3xl">TO-DO</span>  by A&J v0.5
+            <h1 class="text-sm pl-2 ml-2">
+                <span class="font-rock3d text-4xl">TO-DO</span>  by A&J v0.5
             </h1>
         </div>
 
