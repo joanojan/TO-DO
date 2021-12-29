@@ -3,6 +3,19 @@
 $controller = new ApplicationController();
 //Check login status
 $controller->checkLoginStatus();
+/**
+ * The buttons submit the data from the same page with form action=""
+ * Now we must check the action to render the new content 
+ * $_SESSION["tasks"]
+ */
+
+//Searching for some task... I will start by using only the first input, the so called input "task"
+if (isset($_POST["search"])){
+    if(isset($_SESSION["editingTask"])){//Prevent flag conflict for refresh on edit mode
+        unset($_SESSION["editingTask"]);
+    }
+    $_SESSION["tasks"] = $controller->connect()->findTask($_POST["task"]);
+}
 //Load all tasks?
 if (isset($_POST["loadAllTasks"])) {
     if(isset($_SESSION["editingTask"])){//Prevent flag conflict for refresh on edit mode
