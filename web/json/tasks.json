@@ -5,7 +5,7 @@
         "timestampEnd": "Pending",
         "task": "Create Front Page Controller",
         "name": "Albert Garcia",
-        "status": "In execution"
+        "status": "in-progress"
     },
     "2": {
         "id": 2,
@@ -13,7 +13,7 @@
         "timestampEnd": "Mon, 16/May/21 16:14",
         "task": "Create Login View",
         "name": "Joan Vila",
-        "status": "Finished"
+        "status": "finished"
     },
     "3": {
         "id": 3,
@@ -21,6 +21,6 @@
         "timestampEnd": "Pending",
         "task": "Fix Bugs on Login Controller",
         "name": "Ruben Alcalde",
-        "status": "Pending"
+        "status": "pending"
     }
 }
