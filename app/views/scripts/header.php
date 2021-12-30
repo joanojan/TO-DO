@@ -16,7 +16,7 @@ function unsetEditingTask(){
     }
 }
 
-//Searching for some task... I will start by using only the first input, the so called input "task"
+//Searching for some task... 
 if (isset($_POST["search"])){
     unsetEditingTask();//Prevent flag conflict for refresh on edit mode
     $_SESSION["tasks"] = $controller->connect()->findTask($_POST["task"],$_POST["name"],$_POST["status"]);

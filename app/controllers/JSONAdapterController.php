@@ -46,36 +46,21 @@ class JSONAdapterController implements DBOperations
      * @param int taskId - id of the task to change
      * @param string task - Contents of the task text
      * @param string status - Status of the task
-     * @author Albert Garcia
+     * @author Albert Garcia && Joan Vila Valls
      */
     public function editTask($taskId, $task, $status)
     {
         try {
             $allTasks = $this->loadAllTasks();
-            $taskToEdit = [];
-            $taskIndex = null;
 
-            foreach ($allTasks as $currentTask) {
-                $found = false;
-                if ($currentTask["id"] == $taskId) {
-                    $taskToEdit = $task;
-                    $taskIndex = array_search($currentTask, $allTasks);
-                    $found = true;
-                }
-                if ($found) {
-                    break;
-                }
+            $allTasks[$taskId]["name"]=$task;
+            $allTasks[$taskId]["status"]=$status;
+
+            if($status == "Finished"){
+                $creationTime = new DateTime();
+                $allTasks[$taskId]["timestampEnd"] = $creationTime->format("l, j/M/y H:i");
             }
 
-            if ($taskToEdit["task"] != $task) {
-                $taskToEdit = $task;
-            }
-            if ($taskToEdit["status"] != $status) {
-                $taskToEdit = $status;
-            }
-            //TODO add end timestamp if task if marked as finished.
-
-            $allTasks[$taskIndex] = $taskToEdit;
             $encodedTasks = json_encode($allTasks);
             file_put_contents($this->tasksFile, $encodedTasks);
             $_SESSION["tasks"] = $this->loadAllTasks();//Refresh the tasks overview upon insertion to avoid showing the latest change
@@ -124,14 +109,13 @@ class JSONAdapterController implements DBOperations
 
         foreach ($allTasksArr as $element){
 
-            //si al camp task hi ha alguna coincidencia amb el text, carrega la tasca
             foreach($element as $key => $value){
 
                 if($key == "task"){//si hi ha una paraula de la cerca dins el titol aixeco una bandera 
                     $flag1 = ($this->compareStringWords($value,$text));
                 }
                 if($key == "name"){
-                        $flag2 = ($this->compareStringWords($value,$name)) ;
+                    $flag2 = ($this->compareStringWords($value,$name)) ;
                 }
                 if($key == "status"){
                     
