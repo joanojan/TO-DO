@@ -109,9 +109,40 @@ class JSONAdapterController implements DBOperations
         }
     }
 
-    public function findTask()
+    /**
+     * @return array returns the matching tasks found
+     */
+    public function findTask(string $text)
     {
-        //TODO
+        $tasksFound = array();//aquest l'omplenarem!XD
+
+        $text=preg_split("/[\s,;\.]+/",$text);
+
+        $allTasksArr=$this->loadAllTasks();
+
+        foreach ($allTasksArr as $element){
+
+            //si al camp task hi ha alguna coincidencia amb el text, carrega la tasca
+            foreach($element as $key => $value){
+
+                if($key == "task"){
+                    //hem de comparar la descripcio de la tasca amb la cerca
+                    $words=preg_split("/[\s,;\.]+/",$value);
+                    foreach($words as $word){
+
+                        foreach($text as $searchedWord){
+                            if($word == $searchedWord){
+                                array_push($tasksFound,$element);
+                                break 2;   
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $tasksFound;
+        
     }
 
     /**

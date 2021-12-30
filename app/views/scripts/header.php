@@ -3,16 +3,29 @@
 $controller = new ApplicationController();
 //Check login status
 $controller->checkLoginStatus();
+/**
+ * The buttons submit the data from the same page with form action=""
+ * Now we must check the action to render the new content 
+ * $_SESSION["tasks"]
+ */
+
+//Searching for some task... I will start by using only the first input, the so called input "task"
+if (isset($_POST["search"])) {
+    if (isset($_SESSION["editingTask"])) { //Prevent flag conflict for refresh on edit mode
+        unset($_SESSION["editingTask"]);
+    }
+    $_SESSION["tasks"] = $controller->connect()->findTask($_POST["task"]);
+}
 //Load all tasks?
 if (isset($_POST["loadAllTasks"])) {
-    if(isset($_SESSION["editingTask"])){//Prevent flag conflict for refresh on edit mode
+    if (isset($_SESSION["editingTask"])) { //Prevent flag conflict for refresh on edit mode
         unset($_SESSION["editingTask"]);
     }
     $_SESSION["tasks"] = $controller->connect()->loadAllTasks();
 }
 //Insert new task?
 if (isset($_POST["insertTask"])) {
-    if(isset($_SESSION["editingTask"])){//Prevent flag conflict for refresh on edit mode
+    if (isset($_SESSION["editingTask"])) { //Prevent flag conflict for refresh on edit mode
         unset($_SESSION["editingTask"]);
     }
     $task = [
@@ -23,7 +36,7 @@ if (isset($_POST["insertTask"])) {
 }
 //Delete a task?
 if (isset($_POST["deleteTask"])) {
-    if(isset($_SESSION["editingTask"])){//Prevent flag conflict
+    if (isset($_SESSION["editingTask"])) { //Prevent flag conflict
         unset($_SESSION["editingTask"]);
     }
     $arrayIndex = array_key_first($_POST); //Fetch the name of the element in the POST array, as it's dynamic
@@ -33,16 +46,16 @@ if (isset($_POST["deleteTask"])) {
 }
 //Edit a task?
 if (isset($_POST["editTask"])) {
-    $_SESSION["tasks"] = $controller->connect()->loadAllTasks();//Prevent conflicts if a refresh is triggered on the edit mode
+    $_SESSION["tasks"] = $controller->connect()->loadAllTasks(); //Prevent conflicts if a refresh is triggered on the edit mode
     $arrayIndex = array_key_first($_POST); //Fetch the name of the element in the POST array, as it's dynamic
     $index = strpos($arrayIndex, "-") + 1; //Set the index where first number of id occurs
     $taskId = substr($arrayIndex, $index); //Extract the number
     //Store the ID of task being edited
     $_SESSION["editingTask"] = $taskId;
-    $_SESSION["tasks"] = [$_SESSION["tasks"][$taskId]];//Show only the task we are editing
+    $_SESSION["tasks"] = [$_SESSION["tasks"][$taskId]]; //Show only the task we are editing
     //End step in next view: $controller->connect()->editTask($taskId, $task, $status);
 }
-if(isset($_POST["confirmEdit"])){
+if (isset($_POST["confirmEdit"])) {
     unset($_SESSION["editingTask"]);
     $controller->connect()->editTask($_SESSION["tasks"][0]["id"], $_POST["task"], $_POST["status"]);
 }
@@ -80,26 +93,31 @@ unset($_POST);
     </script>
 </head>
 
-<body class="bg-[url('../web/images/david-travis-5bYxXawHOQg-unsplash.jpg')] bg-cover bg-blend-saturation">
-    <header class="grid grid-cols-8">
-        <div class="bg-yellow-600 text-white p-4 col-span-6 text-xl flex items-center shrink">
+<body class="md:bg-[url('../web/images/david-travis-5bYxXawHOQg-unsplash.jpg')] bg-[url('../web/images/hannah-olinger-8eSrC43qdro-unsplash.jpg')] backdrop-saturate-50 bg-cover bg-blend-saturation bg-no-repeat">
+    <!--Header-->
+    <header class="flex flex-nowrap">
+        <div class="bg-yellow-600 text-white p-4 py-2 lg:w-[80%] md:w-[60%] w-[50%] text-xl flex items-center shrink">
             <h1 class="text-sm pl-2 ml-2">
                 <span class="font-rock3d text-4xl">TO-DO</span> by A&J v0.5
             </h1>
         </div>
-        <div class="bg-yellow-500 text-white p-4 flex place-items-center justify-center shrink-0 min-w-fit ">
+        <div class="bg-yellow-600 text-white p-4 py-2 flex place-items-center justify-center lg:w-[10%] md:w-[20%] w-25%">
             <span class="font-icons text-3xl m-2">face</span>
-            <h1> Hola, <br> <?php echo $_SESSION["loggedUser"]["name"]; ?></h1>
+            <h1><?php echo $_SESSION["loggedUser"]["name"];?></h1>
         </div>
 
-        <div class="bg-yellow-400 text-white p-4 flex place-items-center justify-center shrink-0 min-w-fit">
+        <div class="bg-gradient-to-r from-yellow-600 via-transparent to-transparent text-white p-4 py-2 flex place-items-center justify-center shrink-0 lg:w-[10%] md:w-[20%] w-[25%]">
             <form action="" method="post">
-                <button type="submit" name="logout" class="border rounded-md bg-red-500 hover:bg-red-600 hover:shadow-md text-white text-justify align-center p-2 m-2 flex flex-nowrap flex-auto items-center justify-around text-sm">
-                    <span class="font-icons text-xl m-2">power_settings_new</span>Tancar sessió</button>
+                <button type="submit" name="logout" class="hidden md:flex rounded-lg bg-red-600 hover:bg-red-700 hover:shadow-inner text-white text-justify align-center p-2 py-0.5 m-0 flex-nowrap flex-auto items-center justify-around text-sm">
+                    <span class="font-icons text-xl m-2">logout</span>Sortir</button>
+                    <!--Mobile-->
+                    <button type="submit" name="logout" class="md:hidden rounded-lg bg-red-600 hover:bg-red-700 hover:shadow-inner text-white text-justify align-center p-2 py-0.5 m-0 flex flex-nowrap flex-auto items-center justify-around text-sm">
+                    <span class="font-icons text-xl m-2">logout</span></button>
             </form>
         </div>
-        <!--Messages to the user-->
     </header>
+    <!--End header-->
+     <!--Messages to the user-->
     <div class="<?= $hide ?> m-4 p-4 w-1/3 h-[7%] absolute inset-x-0 top-0 opacity-40 bg-white/80 rounded-md shadow shadow-lg mx-auto border border-white">
     </div>
     <div class="<?= $hide ?> m-4 p-2 w-1/3 h-[7%] absolute inset-x-0 top-0  mx-auto flex flex-auto flex-nowrap place-items-center">

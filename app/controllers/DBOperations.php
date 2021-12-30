@@ -6,7 +6,7 @@ interface DBOperations {
     public function insertTask($task);
     public function editTask($taskId, $task, $status);
     public function deleteTask($taskId);
-    public function findTask();
+    public function findTask(string $text);
     public function checkLoginData($userData);
     public function retrieveUserData();
     public function loadAllTasks();
