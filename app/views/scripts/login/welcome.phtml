@@ -68,10 +68,12 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
                         <input type="text" name="task" class="rounded-md border-black m-2 p-1 shadow-md" placeholder="La tasca conté...">
                         <input type="text" name="name" class="rounded-md border-black m-2 p-1 shadow-md" placeholder="Autor de la tasca">
                         <label for="status" class="p-2">Estat de la tasca</label>
-                        <select name="status" class="rounded-md shadow-md m-2 p-1 w-11/12">
-                            <option value="pending">Pendent</option>
-                            <option value="in-progress">En execució</option>
-                            <option value="finished">Finalitzada</option>
+
+                        <select name="status" class="rounded border border-black m-2 p-1 w-11/12">
+                            <option value="pending">Pendent</option><!--atenció: el jason ha de dir també "pending"-->
+                            <option value="in-progress">En execució</option><!--atenció: el jason ha de dir "in-progress"-->
+                            <option value="finished">Finalitzada</option><!--atenció: el jason ha de dir "finished"-->
+
                         </select>
                         <button type="submit" name="search" class="m-2 p-2 rounded-md bg-yellow-600 hover:bg-gray-600 text-white flex flex-nowrap flex-auto items-center justify-center w-11/12"><span class="font-icons text-2xl mr-2">search</span>Cerca</button>
                     </div>

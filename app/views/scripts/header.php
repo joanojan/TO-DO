@@ -9,25 +9,32 @@ $controller->checkLoginStatus();
  * $_SESSION["tasks"]
  */
 
-//Searching for some task... I will start by using only the first input, the so called input "task"
-if (isset($_POST["search"])) {
-    if (isset($_SESSION["editingTask"])) { //Prevent flag conflict for refresh on edit mode
+
+//Prevent flag conflict for refresh on edit mode
+function unsetEditingTask(){
+    if(isset($_SESSION["editingTask"])){
+
         unset($_SESSION["editingTask"]);
     }
-    $_SESSION["tasks"] = $controller->connect()->findTask($_POST["task"]);
+}
+
+//Searching for some task... 
+if (isset($_POST["search"])){
+    unsetEditingTask();//Prevent flag conflict for refresh on edit mode
+    $_SESSION["tasks"] = $controller->connect()->findTask($_POST["task"],$_POST["name"],$_POST["status"]);
 }
 //Load all tasks?
 if (isset($_POST["loadAllTasks"])) {
-    if (isset($_SESSION["editingTask"])) { //Prevent flag conflict for refresh on edit mode
-        unset($_SESSION["editingTask"]);
-    }
+
+    unsetEditingTask();//Prevent flag conflict for refresh on edit mode
+
     $_SESSION["tasks"] = $controller->connect()->loadAllTasks();
 }
 //Insert new task?
 if (isset($_POST["insertTask"])) {
-    if (isset($_SESSION["editingTask"])) { //Prevent flag conflict for refresh on edit mode
-        unset($_SESSION["editingTask"]);
-    }
+
+    unsetEditingTask();//Prevent flag conflict for refresh on edit mode
+
     $task = [
         "task" => $_POST["task"],
         "name" => $_SESSION["loggedUser"]["name"]
@@ -36,9 +43,9 @@ if (isset($_POST["insertTask"])) {
 }
 //Delete a task?
 if (isset($_POST["deleteTask"])) {
-    if (isset($_SESSION["editingTask"])) { //Prevent flag conflict
-        unset($_SESSION["editingTask"]);
-    }
+
+    unsetEditingTask();//Prevent flag conflict for refresh on edit mode
+
     $arrayIndex = array_key_first($_POST); //Fetch the name of the element in the POST array, as it's dynamic
     $index = strpos($arrayIndex, "-") + 1; //Set the index where first number of id occurs
     $taskId = substr($arrayIndex, $index); //Extract the number
@@ -55,8 +62,10 @@ if (isset($_POST["editTask"])) {
     $_SESSION["tasks"] = [$_SESSION["tasks"][$taskId]]; //Show only the task we are editing
     //End step in next view: $controller->connect()->editTask($taskId, $task, $status);
 }
-if (isset($_POST["confirmEdit"])) {
-    unset($_SESSION["editingTask"]);
+
+if(isset($_POST["confirmEdit"])){
+    unsetEditingTask();
+
     $controller->connect()->editTask($_SESSION["tasks"][0]["id"], $_POST["task"], $_POST["status"]);
 }
 //Are there any errors or messages to display?

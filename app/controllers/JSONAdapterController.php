@@ -46,36 +46,21 @@ class JSONAdapterController implements DBOperations
      * @param int taskId - id of the task to change
      * @param string task - Contents of the task text
      * @param string status - Status of the task
-     * @author Albert Garcia
+     * @author Albert Garcia && Joan Vila Valls
      */
     public function editTask($taskId, $task, $status)
     {
         try {
             $allTasks = $this->loadAllTasks();
-            $taskToEdit = [];
-            $taskIndex = null;
 
-            foreach ($allTasks as $currentTask) {
-                $found = false;
-                if ($currentTask["id"] == $taskId) {
-                    $taskToEdit = $task;
-                    $taskIndex = array_search($currentTask, $allTasks);
-                    $found = true;
-                }
-                if ($found) {
-                    break;
-                }
+            $allTasks[$taskId]["task"]=$task;
+            $allTasks[$taskId]["status"]=$status;
+
+            if($status == "Finished"){
+                $creationTime = new DateTime();
+                $allTasks[$taskId]["timestampEnd"] = $creationTime->format("l, j/M/y H:i");
             }
 
-            if ($taskToEdit["task"] != $task) {
-                $taskToEdit = $task;
-            }
-            if ($taskToEdit["status"] != $status) {
-                $taskToEdit = $status;
-            }
-            //TODO add end timestamp if task if marked as finished.
-
-            $allTasks[$taskIndex] = $taskToEdit;
             $encodedTasks = json_encode($allTasks);
             file_put_contents($this->tasksFile, $encodedTasks);
             $_SESSION["tasks"] = $this->loadAllTasks();//Refresh the tasks overview upon insertion to avoid showing the latest change
@@ -110,39 +95,68 @@ class JSONAdapterController implements DBOperations
     }
 
     /**
-     * @return array returns the matching tasks found
+     * Es pot buscar per autor o per contingut del nom de tasca, o simplement per estat, 
+     * el qual sempre formarà part de la cerca
+     * @author Joan Vila Valls
      */
-    public function findTask(string $text)
+    public function findTask(string $text, string $name, string $status):array
     {
-        $tasksFound = array();//aquest l'omplenarem!XD
+        $flag1 = false;
+        $flag2 = false;
+        $tasksFound = array();
 
-        $text=preg_split("/[\s,;\.]+/",$text);
-
-        $allTasksArr=$this->loadAllTasks();
+        $allTasksArr=$this->loadAllTasks(); 
 
         foreach ($allTasksArr as $element){
 
-            //si al camp task hi ha alguna coincidencia amb el text, carrega la tasca
             foreach($element as $key => $value){
 
-                if($key == "task"){
-                    //hem de comparar la descripcio de la tasca amb la cerca
-                    $words=preg_split("/[\s,;\.]+/",$value);
-                    foreach($words as $word){
-
-                        foreach($text as $searchedWord){
-                            if($word == $searchedWord){
-                                array_push($tasksFound,$element);
-                                break 2;   
-                            }
+                if($key == "task"){//si hi ha una paraula de la cerca dins el titol aixeco una bandera 
+                    $flag1 = ($this->compareStringWords($value,$text));
+                }
+                if($key == "name"){
+                    $flag2 = ($this->compareStringWords($value,$name)) ;
+                }
+                if($key == "status"){
+                    
+                    if($value == $status)
+                    {
+                        
+                        if(empty($text) and empty($name)){
+                            array_push($tasksFound,$element);
+                        } else if(empty($text) and $flag2){
+                            array_push($tasksFound,$element);
+                        } else if (empty($name) and $flag1){
+                            array_push($tasksFound,$element);
+                        } else if ($flag1 and $flag2){
+                            array_push($tasksFound,$element);
                         }
-                    }
+                    }  
                 }
             }
         }
+        return $tasksFound;        
+    }
 
-        return $tasksFound;
-        
+    /**
+     * Return true if any word matches
+     * Case insensitive
+     * Words are separated by space, semicolon, coma or dots.
+     * Any special character is just part of the word
+     * @author Joan Vila Valls
+     */
+    public function compareStringWords(string $s1,string $s2):bool
+    {
+        $s1=preg_split("/[\s,;\.]+/",$s1);
+        $s2=preg_split("/[\s,;\.]+/",$s2); 
+        foreach($s1 as $word){
+            foreach($s2 as $cmpWord){
+                if(strcasecmp($word,$cmpWord) == 0) {
+                    return true;
+                } 
+            }
+        }
+        return false;
     }
 
     /**
