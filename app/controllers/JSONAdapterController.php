@@ -101,28 +101,28 @@ class JSONAdapterController implements DBOperations
      */
     public function findTask(string $text, string $name, string $status):array
     {
+        var_dump($status);
         $flag1 = false;
         $flag2 = false;
         $tasksFound = array();
-
+        
         $allTasksArr=$this->loadAllTasks(); 
 
         foreach ($allTasksArr as $element){
 
             foreach($element as $key => $value){
 
+                $value=strtolower($value);//per evitar errors si li passen majuscules
                 if($key == "task"){//si hi ha una paraula de la cerca dins el titol aixeco una bandera 
                     $flag1 = ($this->compareStringWords($value,$text));
                 }
-                if($key == "name"){
+                if($key == "name"){//en el cas que hi hagi una coincidencia amb l'autor aixeco una altra bandera
                     $flag2 = ($this->compareStringWords($value,$name)) ;
                 }
                 if($key == "status"){
-                    
-                    if($value == $status)
+                    if($value == $status)//si l'estat de la tasca coincideix amb l'estat que hom cerca
                     {
-                        
-                        if(empty($text) and empty($name)){
+                        if(empty($text) and empty($name)){//si els altres criteris de cerca són buits
                             array_push($tasksFound,$element);
                         } else if(empty($text) and $flag2){
                             array_push($tasksFound,$element);
@@ -135,7 +135,7 @@ class JSONAdapterController implements DBOperations
                 }
             }
         }
-        return $tasksFound;        
+        return $tasksFound;          
     }
 
     /**
