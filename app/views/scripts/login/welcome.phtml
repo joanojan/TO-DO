@@ -95,9 +95,9 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
                 <h2 class="font-bold p-2 m-2 text-3xl font-rock3d">Editar tasca</h2>
                 <div class="flex flex-wrap md:flex-nowrap justify-items-evenly">
                     <span class="hidden lg:inline font-icons text-4xl p-2 col-span-1 justify-right w-[5%]">notes</span>
-                    <textarea name="task" id="" cols="30" rows="5" class="w-[100%] md:w-[70%] resize-none rounded-md p-2 m-2 mb-0 font-overpass placeholder:whitespace-normal row-span-2 align-top text-left whitespace-normal shadow shadow-lg" required><?= $_SESSION["tasks"][0]["task"] ?></textarea>
+                    <textarea name="task" id="" cols="30" rows="5" class="w-full md:w-[70%] resize-none rounded-md p-2 md:m-2 md:mb-0 m-0 font-overpass placeholder:whitespace-normal row-span-2 align-top text-left whitespace-normal shadow shadow-lg" required><?= $_SESSION["tasks"][0]["task"] ?></textarea>
                     <div class="w-[100%] md:w-[15%] grid grid-rows-2">
-                        <select name="status" class="rounded m-2 p-1 w-[90%] mx-auto shadow shadow-lg">
+                        <select name="status" class="rounded m-2 p-1 w-full mx-auto shadow shadow-lg">
                             <option value="Pending" <?php if ($_SESSION["tasks"][0]["status"] == "Pending") {
                                                         echo "selected";
                                                     } ?>>Pendent</option>
@@ -108,7 +108,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
                                                             echo "selected";
                                                         } ?>>Finalitzada</option>
                         </select>
-                        <button type="submit" name="confirmEdit" class="mx-auto align-middle rounded-md p-2 m-2 w-[90%] bg-green-600 hover:bg-gray-600 text-white flex flex-nowrap flex-auto items-center justify-center"><span class="font-icons text-2xl ml-2 mr-2">thumb_up_off_alt</span>Confirm changes</button>
+                        <button type="submit" name="confirmEdit" class="mx-auto align-middle rounded-md p-2 m-2 w-full bg-green-600 hover:bg-gray-600 text-white flex flex-nowrap flex-auto items-center justify-center"><span class="font-icons text-2xl ml-2 mr-2">thumb_up_off_alt</span>Confirm changes</button>
                     </div>
                 </div>
             </form>
