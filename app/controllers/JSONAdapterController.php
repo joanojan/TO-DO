@@ -53,7 +53,7 @@ class JSONAdapterController implements DBOperations
         try {
             $allTasks = $this->loadAllTasks();
 
-            $allTasks[$taskId]["name"]=$task;
+            $allTasks[$taskId]["task"]=$task;
             $allTasks[$taskId]["status"]=$status;
 
             if($status == "Finished"){

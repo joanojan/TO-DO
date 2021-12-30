@@ -55,7 +55,7 @@ if (isset($_POST["editTask"])) {
     //End step in next view: $controller->connect()->editTask($taskId, $task, $status);
 }
 if(isset($_POST["confirmEdit"])){
-    unset($_SESSION["editingTask"]);
+    unsetEditingTask();
     $controller->connect()->editTask($_SESSION["tasks"][0]["id"], $_POST["task"], $_POST["status"]);
 }
 //Are there any errors or messages to display?
