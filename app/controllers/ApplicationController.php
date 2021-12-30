@@ -114,40 +114,41 @@ class ApplicationController extends Controller
             } else if ($task["status"] == "Finished") {
                 $color = "green";
                 $icon = "task_alt";
-                $finish = '<p class="ml-2 whitespace-normal">on ' . $task["timestampEnd"] . '</p>';
+                $finish = '<p class="lg:ml-2 sm:mt-2 lg:m-0 whitespace-normal lg:pl-2 lg:pr-2 p-1"><span class="font-icons text-lg mr-0.5 align-middle">schedule</span> ' . $task["timestampEnd"] . '</p>';
             }
 ?>
             <!--Task card-->
-            <div class="bg-white border border-2 rounded-md border-<?=$color;?>-700 shadow shadow-md shadow-<?=$color;?>-700 rounded-md m-2 p-3 grid grid-cols-2">
-                <div>
+            <div class="bg-white/50 border border-2 rounded-md border-<?=$color;?>-700 shadow shadow-md shadow-<?=$color;?>-700 rounded-md m-2 p-3 flex md:flex-nowrap flex-wrap justify-around align-items-center">
+                <div class="w-full">
                     <!--Task-->
                     <div class="flex flex-nowrap flex-auto items-center justify-left">
                         <span class="font-icons text-2xl p-2">notes</span>
                         <p class="whitespace-normal font-overpass text-xl"><?= $task["task"]; ?></p>
                     </div>
                     <!--Author and start date-->
-                    <div class="flex flex-nowrap flex-auto items-center justify-left">
+                    <div class="flex flex-nowrap flex-auto items-center justify-left mb-1">
                         <span class="font-icons text-2xl p-2">face</span>
                         <p class="whitespace-normal inline"><?= $task["name"]; ?> on <?= $task["timestampStart"]; ?></p>
                     </div>
                 </div>
-                <div>
+                <div class="md:w-[30%] w-full ml-2">
                     <!--Status-->
-                    <div class="flex flex-nowrap flex-auto items-center justify-left rounded-md bg-<?= $color ?>-700 text-white">
-                        <span class="font-icons text-2xl p-2"><?= $icon ?></span>
-                        <p class="whitespace-normal inline"><?= $task["status"] . $finish; ?></p>
+                    <div class="flex lg:flex-nowrap py-1 lg:py-0 flex-wrap flex-auto align-items-center justify-center lg:justify-left rounded-md bg-<?= $color ?>-700 text-white text-center lg:text-left">
+                        <span class="font-icons text-2xl p-2 my-auto"><?= $icon ?></span>
+                        <p class="whitespace-normal my-auto pr-1 pl-1"><?= $task["status"] ?></p>
+                        <?=$finish;?>
                     </div>
                     <!--Action buttons-->
-                    <div id="buttons" class="flex flex-nowrap flex-auto items-center justify-left">
+                    <div id="buttons" class="flex lg:flex-nowrap flex-wrap flex-auto align-items-center justify-items-around w-full">
                         <!--Edit-->
-                        <form action="" method="post" class="mt-2 mb-2">
+                        <form action="" method="post" class="w-full md:mr-1 shrink">
                             <input type="hidden" name="edit-<?= $task["id"] ?>">
-                            <button type="submit" name="editTask" class="align-middle rounded-md p-2 mt-2  bg-yellow-600 hover:bg-gray-600 text-white flex flex-nowrap flex-auto items-center justify-around <?php if(isset($_SESSION["editingTask"])){echo "hidden";}?>"><span class="font-icons pl-2 pr-2 align-middle">edit</span>Edit</button>
+                            <button type="submit" name="editTask" class="inline align-middle rounded-md p-2 w-full mt-2 bg-yellow-600 hover:bg-gray-600 hover:inner-shadow text-white flex flex-nowrap flex-auto align-items-center justify-center <?php if(isset($_SESSION["editingTask"])){echo "hidden";}?>"><span class="font-icons pl-2 pr-2 align-middle">edit</span>Edit</button>
                         </form>
                         <!--Delete-->
-                        <form action="" method="post" class="m-2">
+                        <form action="" method="post" class="w-full shrink">
                             <input type="hidden" name="delete-<?= $task["id"] ?>">
-                            <button type="submit" name="deleteTask" class="align-middle rounded-md p-2 mt-2  bg-red-600 hover:bg-red-800 hover:animate-pulse text-white flex flex-nowrap flex-auto items-center justify-around"><span class="font-icons pl-2 pr-2 align-middle">delete</span>Delete</button>
+                            <button type="submit" name="deleteTask" class="inline align-middle rounded-md p-2 mt-2 w-full bg-red-600 hover:bg-red-800 hover:inner-shadow hover:animate-pulse text-white flex flex-nowrap flex-auto align-items-center justify-center"><span class="font-icons pl-2 pr-2 align-middle">delete</span>Delete</button>
                         </form>
                     </div>
                 </div>
