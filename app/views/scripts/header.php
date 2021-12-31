@@ -43,13 +43,8 @@ if (isset($_POST["insertTask"])) {
 }
 //Delete a task?
 if (isset($_POST["deleteTask"])) {
-
     unsetEditingTask();//Prevent flag conflict for refresh on edit mode
-
-    $arrayIndex = array_key_first($_POST); //Fetch the name of the element in the POST array, as it's dynamic
-    $index = strpos($arrayIndex, "-") + 1; //Set the index where first number of id occurs
-    $taskId = substr($arrayIndex, $index); //Extract the number
-    $controller->connect()->deleteTask($taskId);
+    $controller->connect()->deleteTask($_POST['deleteTask']);
 }
 //Edit a task?
 if (isset($_POST["editTask"])) {
