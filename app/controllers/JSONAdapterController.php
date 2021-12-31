@@ -21,7 +21,12 @@ class JSONAdapterController implements DBOperations
     {
         try {
             $allTasks = $this->loadAllTasks();
-            $lastId = $allTasks[count($allTasks)]["id"]; //fetch last id from the tasks file
+            $lastId = 0;
+            if(count($allTasks) == 0){
+                //prevent reading from unset array element
+            } else {
+                $lastId = $allTasks[count($allTasks)-1]["id"]; //fetch last id from the tasks file
+            }
             $newTask["id"] = $lastId + 1; //Add 1 to last id
             $creationTime = new DateTime(); //Current timestamp
             $newTask["timestampStart"] = $creationTime->format("l, j/M/y H:i"); //Creation timestamp, format like "Wedneday, 3/Nov/21 18:45"
