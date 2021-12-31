@@ -92,8 +92,8 @@ unset($_POST);
                     'infocard-in': {
                         '0%': {transform: 'translateX(200%)'},
                         '20%': {transform: 'translateX(0%)'},
-                        '80%': {transform: 'translateX(0%)'},
-                        '100%': {transform: 'translateX(200%)'},
+                        '80%': {transform: 'translateX(0%)', opacity: '1'},
+                        '100%': {opacity: '0'},
                     },
                 },
                 animation: {
