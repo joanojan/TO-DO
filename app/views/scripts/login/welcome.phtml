@@ -7,7 +7,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
         <ul class="flex flex-auto flex-wrap items-start justify-around m-2">
             <!--First item: List all-->
             <li class="w-min">
-                <form action="" method="post">
+                <form action=<?= WEB_ROOT . "/process"; ?> method="post">
                     <button type="submit" name="loadAllTasks" class="my-4 mt-0 rounded-md p-2 py-4 bg-yellow-600 hover:bg-gray-600 text-white min-w-full shadow shadow-lg align-middle"><span class="font-icons pl-2 pr-2 align-middle">notes</span>Llista</button>
                 </form>
             </li>
@@ -120,8 +120,6 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
     </div>
     <!--End of right menu-->
 </div>
-
-
 
 
 </body>
