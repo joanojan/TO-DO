@@ -30,7 +30,7 @@ class JSONAdapterController implements DBOperations
             $newTask["name"] = $task["name"]; //User who created the task
             $newTask["status"] = "Pending"; //Newly created, pending by default
             array_push($allTasks, $newTask);
-            $encodedTasks = json_encode($allTasks);
+            $encodedTasks = json_encode($allTasks, JSON_PRETTY_PRINT);
             file_put_contents($this->tasksFile, $encodedTasks);
             $_SESSION["tasks"] = $this->loadAllTasks();//Refresh the tasks overview upon insertion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca creada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
@@ -61,7 +61,7 @@ class JSONAdapterController implements DBOperations
                 $allTasks[$taskId]["timestampEnd"] = $creationTime->format("l, j/M/y H:i");
             }
 
-            $encodedTasks = json_encode($allTasks);
+            $encodedTasks = json_encode($allTasks, JSON_PRETTY_PRINT);
             file_put_contents($this->tasksFile, $encodedTasks);
             $_SESSION["tasks"] = $this->loadAllTasks();//Refresh the tasks overview upon insertion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca modificada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
@@ -85,7 +85,7 @@ class JSONAdapterController implements DBOperations
             $index = $key[$taskToDelete]; //Set the actual index that is going to be deleted
             unset($allTasks[$index]); //Delete
             //TODO: Might be useful to reform the indexes of the array
-            $encodedTasks = json_encode($allTasks);
+            $encodedTasks = json_encode($allTasks, JSON_PRETTY_PRINT);
             file_put_contents($this->tasksFile, $encodedTasks);
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon deletion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca eliminada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
@@ -101,7 +101,6 @@ class JSONAdapterController implements DBOperations
      */
     public function findTask(string $text, string $name, string $status):array
     {
-        var_dump($status);
         $flag1 = false;
         $flag2 = false;
         $tasksFound = array();
