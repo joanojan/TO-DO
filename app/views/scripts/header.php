@@ -87,6 +87,17 @@ unset($_POST);
                     'rock3d': ['"Rock 3D"'], //logo
                     'overpass': ['Overpass', 'sans-serif'], //task text
                     'icons': ['"Material Icons"'], //icons
+                },
+                keyframes: {
+                    'infocard-in': {
+                        '0%': {transform: 'translateX(200%)'},
+                        '20%': {transform: 'translateX(0%)'},
+                        '80%': {transform: 'translateX(0%)'},
+                        '100%': {transform: 'translateX(200%)'},
+                    },
+                },
+                animation: {
+                    'infocard-in': 'infocard-in 3s ease-in-out forwards',
                 }
             }
         }
@@ -103,46 +114,44 @@ unset($_POST);
         </div>
         <div class="bg-yellow-600 text-white p-4 py-2 flex place-items-center justify-center lg:w-[10%] md:w-[20%] w-25%">
             <span class="font-icons text-3xl m-2">face</span>
-            <h1><?php echo $_SESSION["loggedUser"]["name"];?></h1>
+            <h1><?php echo $_SESSION["loggedUser"]["name"]; ?></h1>
         </div>
 
         <div class="bg-gradient-to-r from-yellow-600 via-transparent to-transparent text-white p-4 py-2 flex place-items-center justify-center shrink-0 lg:w-[10%] md:w-[20%] w-[25%]">
             <form action="" method="post">
                 <button type="submit" name="logout" class="hidden md:flex rounded-lg bg-red-600 hover:bg-red-700 hover:shadow-inner text-white text-justify align-center p-2 py-0.5 m-0 flex-nowrap flex-auto items-center justify-around text-sm">
                     <span class="font-icons text-xl m-2">logout</span>Sortir</button>
-                    <!--Mobile-->
-                    <button type="submit" name="logout" class="md:hidden rounded-lg bg-red-600 hover:bg-red-700 hover:shadow-inner text-white text-justify align-center p-2 py-0.5 m-0 flex flex-nowrap flex-auto items-center justify-around text-sm">
+                <!--Mobile-->
+                <button type="submit" name="logout" class="md:hidden rounded-lg bg-red-600 hover:bg-red-700 hover:shadow-inner text-white text-justify align-center p-2 py-0.5 m-0 flex flex-nowrap flex-auto items-center justify-around text-sm">
                     <span class="font-icons text-xl m-2">logout</span></button>
             </form>
         </div>
     </header>
     <!--End header-->
-     <!--Messages to the user-->
-    <div class="<?= $hide ?> m-4 p-4 w-1/3 h-[7%] absolute inset-x-0 top-0 opacity-40 bg-white/80 rounded-md shadow shadow-lg mx-auto border border-white">
-    </div>
-    <div class="<?= $hide ?> m-4 p-2 w-1/3 h-[7%] absolute inset-x-0 top-0  mx-auto flex flex-auto flex-nowrap place-items-center">
-        <p class="text-green-900 align-middle">
+    <!--Messages to the user-->
+    <div class="<?= $hide ?> animate-infocard-in fixed m-4 p-4 w-fit max-w-1/2 lg:max-w-[25%] right-0 top-[10%] bg-white/95 rounded-md shadow shadow-xl flex flex-auto justify-items-center">
+        <p class="text-green-900 align-middle mx-auto text-center md:text-justify lg:text-left">
             <?php
             if (isset($_SESSION["messages"])) {
                 foreach ($_SESSION["messages"] as $message) {
-                    echo '<span class="font-icons text-3xl ml-2 mr-2 align-middle">
+                    echo $message;
+                    echo '<span class="font-icons text-2xl ml-2 mr-2 align-middle">
                     sentiment_very_satisfied
                     </span>';
-                    echo $message;
                 }
                 if (isset($_SESSION["loggedUser"])) { //Erase messages only if a user is logged in
                     unset($_SESSION["messages"]);
                 }
             }
             ?></p>
-        <p class="text-red-900">
+        <p class="text-red-900 align-middle mx-auto text-center md:text-justify lg:text-left">
             <?php
             if (isset($_SESSION["errors"])) {
                 foreach ($_SESSION["errors"] as $message) {
-                    echo '<span class="font-icons text-3xl ml-2 mr-2 align-middle">
+                    echo $message;
+                    echo '<span class="font-icons text-2xl ml-2 mr-2 align-middle">
                     mood_bad
                     </span>';
-                    echo $message;
                 }
                 if (isset($_SESSION["loggedUser"])) { //Erase messages only if a user is logged in
                     unset($_SESSION["errors"]);
