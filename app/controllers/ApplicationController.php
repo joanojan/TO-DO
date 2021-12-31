@@ -147,8 +147,8 @@ class ApplicationController extends Controller
                         </form>
                         <!--Delete-->
                         <form action="" method="post" class="w-full shrink">
-                            <input type="hidden" name="delete-<?= $task["id"] ?>">
-                            <button type="submit" name="deleteTask" class="inline align-middle rounded-md p-2 mt-2 w-full bg-red-600 hover:bg-red-800 hover:inner-shadow hover:animate-pulse text-white flex flex-nowrap flex-auto align-items-center justify-center"><span class="font-icons pl-2 pr-2 align-middle">delete</span>Delete</button>
+                 <!--           <input type="hidden" name="delete-<?= $task["id"] ?>">-->
+                            <button type="submit" name="deleteTask" value="<?= $task["id"] ?>" class="inline align-middle rounded-md p-2 mt-2 w-full bg-red-600 hover:bg-red-800 hover:inner-shadow hover:animate-pulse text-white flex flex-nowrap flex-auto align-items-center justify-center"><span class="font-icons pl-2 pr-2 align-middle">delete</span>Delete</button>
                         </form>
                     </div>
                 </div>

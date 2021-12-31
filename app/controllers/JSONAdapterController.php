@@ -21,8 +21,8 @@ class JSONAdapterController implements DBOperations
     {
         try {
             $allTasks = $this->loadAllTasks();
-            $lastId = $allTasks[count($allTasks)]["id"]; //fetch last id from the tasks file
-            $newTask["id"] = $lastId + 1; //Add 1 to last id
+            $lastId = count($allTasks);
+            $newTask["id"] = $lastId;
             $creationTime = new DateTime(); //Current timestamp
             $newTask["timestampStart"] = $creationTime->format("l, j/M/y H:i"); //Creation timestamp, format like "Wedneday, 3/Nov/21 18:45"
             $newTask["timestampEnd"] = "Pending"; //Newly created, can't have a finished time yet
@@ -60,7 +60,6 @@ class JSONAdapterController implements DBOperations
                 $creationTime = new DateTime();
                 $allTasks[$taskId]["timestampEnd"] = $creationTime->format("l, j/M/y H:i");
             }
-
             $encodedTasks = json_encode($allTasks, JSON_PRETTY_PRINT);
             file_put_contents($this->tasksFile, $encodedTasks);
             $_SESSION["tasks"] = $this->loadAllTasks();//Refresh the tasks overview upon insertion to avoid showing the latest change
@@ -84,7 +83,10 @@ class JSONAdapterController implements DBOperations
             $key = array_keys($allTasks); //Get the name of the key, as it's a number
             $index = $key[$taskToDelete]; //Set the actual index that is going to be deleted
             unset($allTasks[$index]); //Delete
-            //TODO: Might be useful to reform the indexes of the array
+            $allTasks=array_values($allTasks);
+            for($i = 0; $i<count($allTasks); $i++){
+                $allTasks[$i]["id"]=$i;
+            }
             $encodedTasks = json_encode($allTasks, JSON_PRETTY_PRINT);
             file_put_contents($this->tasksFile, $encodedTasks);
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon deletion to avoid showing the latest change
