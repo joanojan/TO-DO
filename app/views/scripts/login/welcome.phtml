@@ -44,7 +44,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
         <ul class="grid grid-rows-auto place-items-center gap-2">
             <!--First item: List all-->
             <li class="min-w-full">
-                <form action="" method="post">
+                <form action=<?= WEB_ROOT . "/process"; ?> method="post">
                     <button type="submit" name="loadAllTasks" class="my-6 rounded-md p-2 bg-yellow-600 hover:bg-gray-600 text-white min-w-full shadow shadow-lg">Mostra totes les tasques</button>
                 </form>
             </li>

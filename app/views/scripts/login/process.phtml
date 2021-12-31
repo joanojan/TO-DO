@@ -1,3 +1,17 @@
 <?php 
-echo "hello world!";
+//Start general app controller
+$controller = new ApplicationController();
+//Check login status
+$controller->checkLoginStatus();
+/**
+ * we must check the action to render the new content 
+ * $_SESSION["tasks"]
+ */
+//Load all tasks?
+if (isset($_POST["loadAllTasks"])) {
+    $_SESSION["tasks"] = $controller->connect()->loadAllTasks();
+}
+
+header("Location:/github/phpinitialDemo/web/welcome");
+exit();
 ?>

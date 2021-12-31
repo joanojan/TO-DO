@@ -9,7 +9,6 @@ $controller->checkLoginStatus();
  * $_SESSION["tasks"]
  */
 
-
 //Prevent flag conflict for refresh on edit mode
 function unsetEditingTask(){
     if(isset($_SESSION["editingTask"])){
@@ -17,7 +16,6 @@ function unsetEditingTask(){
         unset($_SESSION["editingTask"]);
     }
 }
-
 //Searching for some task... 
 if (isset($_POST["search"])){
     unsetEditingTask();//Prevent flag conflict for refresh on edit mode
