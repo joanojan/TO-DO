@@ -148,9 +148,10 @@ class ApplicationController extends Controller
                         <!--Edit-->
                         <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="w-full md:mr-1 shrink">
                             <input type="hidden" name="edit-<?= $task["id"] ?>">
-                            <button type="submit" name="editTask" class="inline align-middle rounded-md p-2 w-full mt-2 bg-yellow-600 hover:bg-gray-600 hover:inner-shadow text-white flex flex-nowrap flex-auto align-items-center justify-center <?php if (isset($_SESSION["editingTask"])) {
-                                                                                                                                                                                                                                                        echo "hidden";
-                                                                                                                                                                                                                                                    } ?>"><span class="font-icons pl-2 pr-2 align-middle">edit</span>Edit</button>
+                            <button type="submit" name="editTask" class="inline align-middle rounded-md p-2 w-full mt-2 bg-yellow-600 hover:bg-gray-600 hover:inner-shadow text-white flex flex-nowrap flex-auto align-items-center justify-center
+                            <?php if (isset($_SESSION["editingTask"])) {
+                                echo "hidden";
+                            } ?>"><span class="font-icons pl-2 pr-2 align-middle">edit</span>Edit</button>
                         </form>
                         <!--Delete-->
                         <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="w-full shrink">
