@@ -21,8 +21,10 @@ class JSONAdapterController implements DBOperations
     {
         try {
             $allTasks = $this->loadAllTasks();
+
             $lastId = count($allTasks);
             $newTask["id"] = $lastId;
+
             $creationTime = new DateTime(); //Current timestamp
             $newTask["timestampStart"] = $creationTime->format("l, j/M/y H:i"); //Creation timestamp, format like "Wedneday, 3/Nov/21 18:45"
             $newTask["timestampEnd"] = "Pending"; //Newly created, can't have a finished time yet

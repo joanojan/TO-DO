@@ -4,7 +4,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
 <div class="flex md:flex-nowrap flex-wrap justify-items-center align-items-top">
     <!--Left menu sm-->
     <div id="left-menu" class="md:hidden m-2 w-[100%] mx-auto">
-        <ul class="flex flex-auto flex-wrap items-start justify-around m-2">
+        <ul class="flex flex-auto flex-wrap items-around justify-between justify-content-around place-content-stretch m-2">
             <!--First item: List all-->
             <li class="w-min">
                 <form action=<?= WEB_ROOT . "/process"; ?> method="post">
@@ -12,7 +12,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
                 </form>
             </li>
             <!--Second item: Create-->
-            <li class="mb-2 w-[70%]">
+            <li class="mb-2 ml-2 min-w-[70%]">
                 <div>
                     <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="rounded-md shadow shadow-yellow-600 shadow-md flex flex-nowrap justify-items-evenly bg-white/40">
                         <textarea name="task" id="" cols="10" rows="1" class=" resize-none border rounded-md shadow-md p-2 m-2 font-overpass placeholder:whitespace-normal align-top text-left whitespace-normal w-full" placeholder="Nova tasca..."></textarea>
@@ -23,11 +23,13 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
             </li>
             <!--Third item: Search-->
             <li class="mb-2 w-[100%]">
+
                 <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="rounded-md shadow shadow-yellow-600 shadow-md bg-white/40">
-                    <div class="flex flex-auto flex-wrap justify-around">
-                        <input type="text" name="task" class="rounded-md border-black m-2 ml-0 mr-0 p-1 shadow-md w-[50%]" placeholder="Tasca...">
-                        <input type="text" name="name" class="rounded-md border-black m-2 ml-0 mr-0 p-1 shadow-md w-[40%]" placeholder="Autor">
-                        <select name="status" class="rounded-md shadow-md m-2 mr-0 p-1 w-[70%]">
+                    <div class="flex flex-auto flex-wrap justify-between">
+                        <input type="text" name="task" class="rounded-md border-black m-2 p-1 shadow-md w-[50%]" placeholder="Tasca...">
+                        <input type="text" name="name" class="rounded-md border-black m-2 p-1 shadow-md w-[40%]" placeholder="Autor">
+                        <select name="status" class="rounded-md shadow-md m-2 p-1 w-[70%]">
+
                             <option value="pending">Pendent</option>
                             <option value="in-progress">En execució</option>
                             <option value="finished">Finalitzada</option>
