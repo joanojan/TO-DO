@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Inici de sessió - TO-DO by A&J</title>
     <link rel="shortcut icon" href="/web/images/favicon/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/web/images/favicon/favicon-32x32.png" type="image/png">
     <link rel="icon" type="image/x-icon" href="/web/images/favicon/favicon.ico">
@@ -61,10 +61,10 @@
         <?php
         }
         ?>
-        <h1 class="w-11/12 max-w-xs lg:w-11/12 bg-yellow-500/60 text-2xl text-center font-bold rounded-t-md p-1 font-overpass align-middle">Login</h1>
+        <h1 class="w-11/12 max-w-xs lg:w-11/12 bg-yellow-500/60 text-2xl text-center font-bold rounded-t-md p-1 font-overpass">Inici de sessió</h1>
         <form action=<?= WEB_ROOT . "/welcome"; ?> method="post" class="w-11/12 max-w-xs lg:w-11/12 bg-white/40 shadow shadow-lg rounded-b-md px-8 pt-6 pb-8 mb-4">
-            <input type="text" name="username" placeholder="Username" required class="shadow appearance-none border rounded w-full py-2 px-3 text-yellow-700 leading-tight focus:outline-none focus:shadow-outline"><br>
-            <input type="password" name="password" placeholder="Password" required class="my-8 shadow appearance-none border rounded w-full py-2 px-3 text-yellow-700 leading-tight focus:outline-none focus:shadow-outline"><br>
+            <input type="text" name="username" placeholder="Usuari" required class="shadow appearance-none border rounded w-full py-2 px-3 text-yellow-700 leading-tight focus:outline-none focus:shadow-outline"><br>
+            <input type="password" name="password" placeholder="Contrassenya" required class="my-8 shadow appearance-none border rounded w-full py-2 px-3 text-yellow-700 leading-tight focus:outline-none focus:shadow-outline"><br>
             <button type="submit" name="process-login" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"><span class="font-icons mr-2 align-middle">login</span>Indentificar-se</button>
         </form>
 
