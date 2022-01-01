@@ -1,3 +1,7 @@
+# TO-DO by Albert Garcia & Joan Vila
+- To access the app, head to .../web/login in your browser.
+- Existing users and passwords can be found in web/json/users.json file within the project files.
+
 # PHP initial Project
 Main structure of php project. Folders / files:
 - **app**
