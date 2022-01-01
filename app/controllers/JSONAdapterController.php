@@ -21,17 +21,23 @@ class JSONAdapterController implements DBOperations
     {
         try {
             $allTasks = $this->loadAllTasks();
-            $lastId = $allTasks[count($allTasks) - 1]["id"]; //fetch last id from the tasks file
-            $newTask["id"] = $lastId++; //Add 1 to last id
+            $lastId = 0;
+            if(count($allTasks) == 0){
+                //prevent reading from unset array element
+            } else {
+                $lastId = $allTasks[count($allTasks)]["id"]; //fetch last id from the tasks file
+            }
+            $newTask["id"] = $lastId + 1; //Add 1 to last id
             $creationTime = new DateTime(); //Current timestamp
-            $newTask["timestampStart"] = $creationTime->format("l, j/M/y H:i"); //Creation timestamp, format like "Wed, 3/Nov/21 18:45"
-            $newTask["timestampEnd"] = "Pendent"; //Newly created, can't have a finished time yet
+            $newTask["timestampStart"] = $creationTime->format("l, j/M/y H:i"); //Creation timestamp, format like "Wedneday, 3/Nov/21 18:45"
+            $newTask["timestampEnd"] = "Pending"; //Newly created, can't have a finished time yet
             $newTask["task"] = $task["task"]; //Contents of the task
             $newTask["name"] = $task["name"]; //User who created the task
             $newTask["status"] = "Pending"; //Newly created, pending by default
             array_push($allTasks, $newTask);
-            $encodedTasks = json_encode($allTasks);
+            $encodedTasks = json_encode($allTasks, JSON_PRETTY_PRINT);
             file_put_contents($this->tasksFile, $encodedTasks);
+            $_SESSION["tasks"] = $this->loadAllTasks();//Refresh the tasks overview upon insertion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca creada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
             $_SESSION["errors"] = ["S'ha produït un error durant la creació de la tasca.\n" . $e . "\n"];
@@ -45,37 +51,24 @@ class JSONAdapterController implements DBOperations
      * @param int taskId - id of the task to change
      * @param string task - Contents of the task text
      * @param string status - Status of the task
-     * @author Albert Garcia
+     * @author Albert Garcia && Joan Vila Valls
      */
     public function editTask($taskId, $task, $status)
     {
         try {
             $allTasks = $this->loadAllTasks();
-            $taskToEdit = [];
-            $taskIndex = null;
 
-            foreach ($allTasks as $currentTask) {
-                $found = false;
-                if ($currentTask["id"] == $taskId) {
-                    $taskToEdit = $task;
-                    $taskIndex = array_search($currentTask, $allTasks);
-                    $found = true;
-                }
-                if ($found) {
-                    break;
-                }
+            $allTasks[$taskId]["task"]=$task;
+            $allTasks[$taskId]["status"]=$status;
+
+            if($status == "Finished"){
+                $creationTime = new DateTime();
+                $allTasks[$taskId]["timestampEnd"] = $creationTime->format("l, j/M/y H:i");
             }
 
-            if ($taskToEdit["task"] != $task) {
-                $taskToEdit = $task;
-            }
-            if ($taskToEdit["status"] != $status) {
-                $taskToEdit = $status;
-            }
-
-            $allTasks[$taskIndex] = $taskToEdit;
-            $encodedTasks = json_encode($allTasks);
+            $encodedTasks = json_encode($allTasks, JSON_PRETTY_PRINT);
             file_put_contents($this->tasksFile, $encodedTasks);
+            $_SESSION["tasks"] = $this->loadAllTasks();//Refresh the tasks overview upon insertion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca modificada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
             $_SESSION["errors"] = ["S'ha produït un error durant l'edició de la tasca.\n" . $e . "\n"];
@@ -92,20 +85,82 @@ class JSONAdapterController implements DBOperations
     {
         try {
             $allTasks = $this->loadAllTasks();
-            $taskToDelete = array_search($taskId, array_column($allTasks, 'id'));
-            unset($allTasks[$taskToDelete]);
-
-            $encodedTasks = json_encode($allTasks);
+            $taskToDelete = array_search($taskId, array_column($allTasks, 'id')); //Find the correct task
+            $key = array_keys($allTasks); //Get the name of the key, as it's a number
+            $index = $key[$taskToDelete]; //Set the actual index that is going to be deleted
+            unset($allTasks[$index]); //Delete
+            //TODO: Might be useful to reform the indexes of the array
+            $encodedTasks = json_encode($allTasks, JSON_PRETTY_PRINT);
             file_put_contents($this->tasksFile, $encodedTasks);
+            $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon deletion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca eliminada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
             $_SESSION["errors"] = ["S'ha produït un error durant l'eliminació de la tasca.\n" . $e . "\n"];
         }
     }
 
-    public function findTask()
+    /**
+     * Es pot buscar per autor o per contingut del nom de tasca, o simplement per estat, 
+     * el qual sempre formarà part de la cerca
+     * @author Joan Vila Valls
+     */
+    public function findTask(string $text, string $name, string $status):array
     {
-        //TODO
+        $flag1 = false;
+        $flag2 = false;
+        $tasksFound = array();
+        
+        $allTasksArr=$this->loadAllTasks(); 
+
+        foreach ($allTasksArr as $element){
+
+            foreach($element as $key => $value){
+
+                $value=strtolower($value);//per evitar errors si li passen majuscules
+                if($key == "task"){//si hi ha una paraula de la cerca dins el titol aixeco una bandera 
+                    $flag1 = ($this->compareStringWords($value,$text));
+                }
+                if($key == "name"){//en el cas que hi hagi una coincidencia amb l'autor aixeco una altra bandera
+                    $flag2 = ($this->compareStringWords($value,$name)) ;
+                }
+                if($key == "status"){
+                    if($value == $status)//si l'estat de la tasca coincideix amb l'estat que hom cerca
+                    {
+                        if(empty($text) and empty($name)){//si els altres criteris de cerca són buits
+                            array_push($tasksFound,$element);
+                        } else if(empty($text) and $flag2){
+                            array_push($tasksFound,$element);
+                        } else if (empty($name) and $flag1){
+                            array_push($tasksFound,$element);
+                        } else if ($flag1 and $flag2){
+                            array_push($tasksFound,$element);
+                        }
+                    }  
+                }
+            }
+        }
+        return $tasksFound;          
+    }
+
+    /**
+     * Return true if any word matches
+     * Case insensitive
+     * Words are separated by space, semicolon, coma or dots.
+     * Any special character is just part of the word
+     * @author Joan Vila Valls
+     */
+    public function compareStringWords(string $s1,string $s2):bool
+    {
+        $s1=preg_split("/[\s,;\.]+/",$s1);
+        $s2=preg_split("/[\s,;\.]+/",$s2); 
+        foreach($s1 as $word){
+            foreach($s2 as $cmpWord){
+                if(strcasecmp($word,$cmpWord) == 0) {
+                    return true;
+                } 
+            }
+        }
+        return false;
     }
 
     /**
