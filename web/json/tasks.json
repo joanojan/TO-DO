@@ -1,34 +1,10 @@
 [
     {
-        "id": 1,
-        "timestampStart": "Friday, 31\/Dec\/21 14:11",
+        "id": 0,
+        "timestampStart": "Saturday, 1\/Jan\/22 01:09",
         "timestampEnd": "Pending",
-        "task": "1",
-        "name": "Joan Vila",
-        "status": "Pending"
-    },
-    {
-        "id": 1,
-        "timestampStart": "Friday, 31\/Dec\/21 16:35",
-        "timestampEnd": "Pending",
-        "task": "123",
-        "name": "Joan Vila",
-        "status": "Pending"
-    },
-    {
-        "id": 1,
-        "timestampStart": "Friday, 31\/Dec\/21 16:35",
-        "timestampEnd": "Pending",
-        "task": "1234",
-        "name": "Joan Vila",
-        "status": "Pending"
-    },
-    {
-        "id": 1,
-        "timestampStart": "Friday, 31\/Dec\/21 16:40",
-        "timestampEnd": "Pending",
-        "task": "1234",
-        "name": "Joan Vila",
+        "task": "Em sembla que ja est\u00e0 b\u00e9!",
+        "name": "Albert Garcia",
         "status": "Pending"
     }
 ]

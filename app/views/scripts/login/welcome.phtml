@@ -14,7 +14,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
             <!--Second item: Create-->
             <li class="mb-2 w-[70%]">
                 <div>
-                    <form action="" method="post" class="rounded-md shadow shadow-yellow-600 shadow-md flex flex-nowrap justify-items-evenly bg-white/40">
+                    <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="rounded-md shadow shadow-yellow-600 shadow-md flex flex-nowrap justify-items-evenly bg-white/40">
                         <textarea name="task" id="" cols="10" rows="1" class=" resize-none border rounded-md shadow-md p-2 m-2 font-overpass placeholder:whitespace-normal align-top text-left whitespace-normal w-full" placeholder="Nova tasca..."></textarea>
                         <button type="submit" name="insertTask" class="bg-yellow-600 text-white rounded-md m-2 p-1 hover:bg-gray-600 hover:text-white flex flex-nowrap flex-auto items-center justify-center w-min">
                             <span class="font-icons text-xl mx-auto">add_circle</span></button>
@@ -23,7 +23,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
             </li>
             <!--Third item: Search-->
             <li class="mb-2 w-[100%]">
-                <form action="" method="post" class="rounded-md shadow shadow-yellow-600 shadow-md bg-white/40">
+                <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="rounded-md shadow shadow-yellow-600 shadow-md bg-white/40">
                     <div class="flex flex-auto flex-wrap justify-around">
                         <input type="text" name="task" class="rounded-md border-black m-2 ml-0 mr-0 p-1 shadow-md w-[50%]" placeholder="Tasca...">
                         <input type="text" name="name" class="rounded-md border-black m-2 ml-0 mr-0 p-1 shadow-md w-[40%]" placeholder="Autor">
@@ -51,7 +51,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
             <!--Second item: Create-->
             <li class="mb-1">
                 <div>
-                    <form action="" method="post" class="rounded-md shadow shadow-yellow-600 shadow-md grid grid-rows-3 gap-2 bg-white/40">
+                    <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="rounded-md shadow shadow-yellow-600 shadow-md grid grid-rows-3 gap-2 bg-white/40">
                         <textarea name="task" id="" cols="30" rows="5" class=" resize-none border rounded-md shadow-md p-2 m-2 mb-0 font-overpass placeholder:whitespace-normal row-span-2 align-top text-left whitespace-normal" placeholder="Escriu una nova tasca aquí..."></textarea>
                         <button type="submit" name="insertTask" class="my-8 bg-yellow-600 text-white rounded-md mt-0 mb-1.5 m-2 p-2 hover:bg-gray-600 hover:text-white flex flex-nowrap flex-auto items-center justify-center">
                             <span class="font-icons text-2xl mr-2">add_circle</span>Crear nova tasca</button>
@@ -60,7 +60,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
             </li>
             <!--Third item: Search-->
             <li class="mb-1">
-                <form action="" method="post" class="rounded-md shadow shadow-yellow-600 shadow-md grid grid-rows-auto gap-0 bg-white/40">
+                <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="rounded-md shadow shadow-yellow-600 shadow-md grid grid-rows-auto gap-0 bg-white/40">
                     <div class="relative -my-[0.040rem]">
                         <p class="p-2 m-0 bg-yellow-500/70 border-yellow-500 rounded-t-md">Cercador</p>
                     </div>
@@ -93,7 +93,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
         if (isset($_SESSION["editingTask"])) {
         ?>
             <!--Edit form-->
-            <form action="" method="post" class="bg-white/40 m-2 p-2 rounded-md shadow shadow-lg">
+            <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="bg-white/40 m-2 p-2 rounded-md shadow shadow-lg">
                 <h2 class="font-bold p-2 m-2 text-3xl font-rock3d">Editar tasca</h2>
                 <div class="flex flex-wrap md:flex-nowrap justify-items-evenly">
                     <span class="hidden lg:inline font-icons text-4xl p-2 col-span-1 justify-right w-[5%]">notes</span>
