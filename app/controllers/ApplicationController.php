@@ -105,10 +105,10 @@ class ApplicationController extends Controller
     {
         if (!isset($_SESSION["tasks"]) || count($_SESSION["tasks"]) == 0) {
 
-            $_SESSION["errors"] = ["No s'ha trobat cap tasca..."];
+            $_SESSION["errors"] = ["No hi ha cap tasca encara..."];
             return;
         }
-        
+
         foreach ($_SESSION["tasks"] as $task) {
             //Render statuses dynamically
             $color = "red";
@@ -161,7 +161,6 @@ class ApplicationController extends Controller
                     </div>
                 </div>
             </div>
-           
 <?php }
     }
 }

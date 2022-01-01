@@ -120,7 +120,7 @@ class JSONAdapterController implements DBOperations
                     $flag1 = ($this->compareStringWords($value,$text));
                 }
                 if($key == "name"){//en el cas que hi hagi una coincidencia amb l'autor aixeco una altra bandera
-                    $flag2 = ($this->compareStringWords($value,$name)) ;
+                    $flag2 = ($this->compareStringWords($value,$name));
                 }
                 if($key == "status"){
                     if($value == $status)//si l'estat de la tasca coincideix amb l'estat que hom cerca
@@ -137,6 +137,9 @@ class JSONAdapterController implements DBOperations
                     }  
                 }
             }
+        }
+        if($tasksFound == []){
+            $_SESSION["errors"] = ["No s'ha trobat cap tasca amb aquest criteri de cerca"];
         }
         return $tasksFound;          
     }
