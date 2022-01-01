@@ -103,8 +103,7 @@ class ApplicationController extends Controller
      */
     public function renderTasks()
     {
-        if (!isset($_SESSION["tasks"]) || count($_SESSION["tasks"]) == 0) {
-
+        if (!isset($_SESSION["tasks"]) || $_SESSION["tasks"] == null) {
             $_SESSION["errors"] = ["No hi ha cap tasca encara..."];
             return;
         }
@@ -161,6 +160,7 @@ class ApplicationController extends Controller
                     </div>
                 </div>
             </div>
-<?php }
+<?php
+        }
     }
 }
