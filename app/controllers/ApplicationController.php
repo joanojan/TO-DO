@@ -141,14 +141,14 @@ class ApplicationController extends Controller
                     <!--Action buttons-->
                     <div id="buttons" class="flex lg:flex-nowrap flex-wrap flex-auto align-items-center justify-items-around w-full">
                         <!--Edit-->
-                        <form action="" method="post" class="w-full md:mr-1 shrink">
+                        <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="w-full md:mr-1 shrink">
                             <input type="hidden" name="edit-<?= $task["id"] ?>">
                             <button type="submit" name="editTask" class="inline align-middle rounded-md p-2 w-full mt-2 bg-yellow-600 hover:bg-gray-600 hover:inner-shadow text-white flex flex-nowrap flex-auto align-items-center justify-center <?php if(isset($_SESSION["editingTask"])){echo "hidden";}?>"><span class="font-icons pl-2 pr-2 align-middle">edit</span>Edit</button>
                         </form>
                         <!--Delete-->
-                        <form action="" method="post" class="w-full shrink">
-                            <input type="hidden" name="delete-<?= $task["id"] ?>">
-                            <button type="submit" name="deleteTask" class="inline align-middle rounded-md p-2 mt-2 w-full bg-red-600 hover:bg-red-800 hover:inner-shadow hover:animate-pulse text-white flex flex-nowrap flex-auto align-items-center justify-center"><span class="font-icons pl-2 pr-2 align-middle">delete</span>Delete</button>
+                        <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="w-full shrink">
+                 <!--           <input type="hidden" name="delete-<?= $task["id"] ?>">-->
+                            <button type="submit" name="deleteTask" value="<?= $task["id"] ?>" class="inline align-middle rounded-md p-2 mt-2 w-full bg-red-600 hover:bg-red-800 hover:inner-shadow hover:animate-pulse text-white flex flex-nowrap flex-auto align-items-center justify-center"><span class="font-icons pl-2 pr-2 align-middle">delete</span>Delete</button>
                         </form>
                     </div>
                 </div>

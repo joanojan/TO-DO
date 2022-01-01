@@ -1,26 +1,10 @@
-{
-    "1": {
-        "id": 1,
-        "timestampStart": "Wed, 23\/Jan\/21 14:23",
+[
+    {
+        "id": 0,
+        "timestampStart": "Saturday, 1\/Jan\/22 01:09",
         "timestampEnd": "Pending",
-        "task": "Create Front Page Controller",
+        "task": "Em sembla que ja est\u00e0 b\u00e9!",
         "name": "Albert Garcia",
-        "status": "In execution"
-    },
-    "2": {
-        "id": 2,
-        "timestampStart": "Thu, 14\/Feb\/21 17:03",
-        "timestampEnd": "Mon, 16\/May\/21 16:14",
-        "task": "Create Login View",
-        "name": "Joan Vila",
-        "status": "Finished"
-    },
-    "3": {
-        "id": 3,
-        "timestampStart": "Tue, 25\/Mar\/21 09:46",
-        "timestampEnd": "Pending",
-        "task": "Fix Bugs on Login Controller",
-        "name": "Ruben Alcalde",
         "status": "Pending"
     }
-}
+]

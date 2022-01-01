@@ -3,77 +3,12 @@
 $controller = new ApplicationController();
 //Check login status
 $controller->checkLoginStatus();
-/**
- * The buttons submit the data from the same page with form action=""
- * Now we must check the action to render the new content 
- * $_SESSION["tasks"]
- */
 
-
-//Prevent flag conflict for refresh on edit mode
-function unsetEditingTask(){
-    if(isset($_SESSION["editingTask"])){
-
-        unset($_SESSION["editingTask"]);
-    }
-}
-
-//Searching for some task... 
-if (isset($_POST["search"])){
-    unsetEditingTask();//Prevent flag conflict for refresh on edit mode
-    $_SESSION["tasks"] = $controller->connect()->findTask($_POST["task"],$_POST["name"],$_POST["status"]);
-}
-//Load all tasks?
-if (isset($_POST["loadAllTasks"])) {
-
-    unsetEditingTask();//Prevent flag conflict for refresh on edit mode
-
-    $_SESSION["tasks"] = $controller->connect()->loadAllTasks();
-}
-//Insert new task?
-if (isset($_POST["insertTask"])) {
-
-    unsetEditingTask();//Prevent flag conflict for refresh on edit mode
-
-    $task = [
-        "task" => $_POST["task"],
-        "name" => $_SESSION["loggedUser"]["name"]
-    ];
-    $controller->connect()->insertTask($task);
-}
-//Delete a task?
-if (isset($_POST["deleteTask"])) {
-
-    unsetEditingTask();//Prevent flag conflict for refresh on edit mode
-
-    $arrayIndex = array_key_first($_POST); //Fetch the name of the element in the POST array, as it's dynamic
-    $index = strpos($arrayIndex, "-") + 1; //Set the index where first number of id occurs
-    $taskId = substr($arrayIndex, $index); //Extract the number
-    $controller->connect()->deleteTask($taskId);
-}
-//Edit a task?
-if (isset($_POST["editTask"])) {
-    $_SESSION["tasks"] = $controller->connect()->loadAllTasks(); //Prevent conflicts if a refresh is triggered on the edit mode
-    $arrayIndex = array_key_first($_POST); //Fetch the name of the element in the POST array, as it's dynamic
-    $index = strpos($arrayIndex, "-") + 1; //Set the index where first number of id occurs
-    $taskId = substr($arrayIndex, $index); //Extract the number
-    //Store the ID of task being edited
-    $_SESSION["editingTask"] = $taskId;
-    $_SESSION["tasks"] = [$_SESSION["tasks"][$taskId]]; //Show only the task we are editing
-    //End step in next view: $controller->connect()->editTask($taskId, $task, $status);
-}
-
-if(isset($_POST["confirmEdit"])){
-    unsetEditingTask();
-
-    $controller->connect()->editTask($_SESSION["tasks"][0]["id"], $_POST["task"], $_POST["status"]);
-}
 //Are there any errors or messages to display?
 $hide = "hidden";
 if (isset($_SESSION["messages"]) || isset($_SESSION["errors"])) {
     $hide = "";
 }
-//Finally, unset all POST requests
 unset($_POST);
 ?>
 <html lang="en">

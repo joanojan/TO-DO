@@ -16,4 +16,9 @@ class LoginController extends ApplicationController
 	{
 		$this->view->message = "login::welcome";
 	}
+
+	public function processAction()
+	{
+		$this->view->message = "login::process";
+	}
 }
