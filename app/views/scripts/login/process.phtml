@@ -51,6 +51,6 @@ if(isset($_POST["confirmEdit"])){
     $controller->connect()->editTask($_SESSION["tasks"][0]["id"], $_POST["task"], $_POST["status"]);
 }
 
-header("Location:/github/phpinitialDemo/web/welcome");
+header("Location:".WEB_ROOT."/welcome");
 exit();
 ?>

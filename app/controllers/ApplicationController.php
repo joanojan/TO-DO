@@ -103,6 +103,11 @@ class ApplicationController extends Controller
      */
     public function renderTasks()
     {
+        if (!isset($_SESSION["tasks"]) || $_SESSION["tasks"] == null) {
+            $_SESSION["errors"] = ["No hi ha cap tasca encara..."];
+            return;
+        }
+
         foreach ($_SESSION["tasks"] as $task) {
             //Render statuses dynamically
             $color = "red";
@@ -118,7 +123,7 @@ class ApplicationController extends Controller
             }
 ?>
             <!--Task card-->
-            <div class="bg-white/50 border border-2 rounded-md border-<?=$color;?>-700 shadow shadow-md shadow-<?=$color;?>-700 rounded-md m-2 p-3 flex md:flex-nowrap flex-wrap justify-around align-items-center">
+            <div class="bg-white/50 border border-2 rounded-md border-<?= $color; ?>-700 shadow shadow-md shadow-<?= $color; ?>-700 rounded-md m-2 p-3 flex md:flex-nowrap flex-wrap justify-around align-items-center">
                 <div class="w-full">
                     <!--Task-->
                     <div class="flex flex-nowrap flex-auto items-center justify-left">
@@ -136,23 +141,27 @@ class ApplicationController extends Controller
                     <div class="flex lg:flex-nowrap py-1 lg:py-0 flex-wrap flex-auto align-items-center justify-center lg:justify-left rounded-md bg-<?= $color ?>-700 text-white text-center lg:text-left">
                         <span class="font-icons text-2xl p-2 my-auto"><?= $icon ?></span>
                         <p class="whitespace-normal my-auto pr-1 pl-1"><?= $task["status"] ?></p>
-                        <?=$finish;?>
+                        <?= $finish; ?>
                     </div>
                     <!--Action buttons-->
                     <div id="buttons" class="flex lg:flex-nowrap flex-wrap flex-auto align-items-center justify-items-around w-full">
                         <!--Edit-->
                         <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="w-full md:mr-1 shrink">
                             <input type="hidden" name="edit-<?= $task["id"] ?>">
-                            <button type="submit" name="editTask" class="inline align-middle rounded-md p-2 w-full mt-2 bg-yellow-600 hover:bg-gray-600 hover:inner-shadow text-white flex flex-nowrap flex-auto align-items-center justify-center <?php if(isset($_SESSION["editingTask"])){echo "hidden";}?>"><span class="font-icons pl-2 pr-2 align-middle">edit</span>Edit</button>
+                            <button type="submit" name="editTask" class="inline align-middle rounded-md p-2 w-full mt-2 bg-yellow-600 hover:bg-gray-600 hover:inner-shadow text-white flex flex-nowrap flex-auto align-items-center justify-center
+                            <?php if (isset($_SESSION["editingTask"])) {
+                                echo "hidden";
+                            } ?>"><span class="font-icons pl-2 pr-2 align-middle">edit</span>Edit</button>
                         </form>
                         <!--Delete-->
                         <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="w-full shrink">
-                 <!--           <input type="hidden" name="delete-<?= $task["id"] ?>">-->
+                            <!--           <input type="hidden" name="delete-<?= $task["id"] ?>">-->
                             <button type="submit" name="deleteTask" value="<?= $task["id"] ?>" class="inline align-middle rounded-md p-2 mt-2 w-full bg-red-600 hover:bg-red-800 hover:inner-shadow hover:animate-pulse text-white flex flex-nowrap flex-auto align-items-center justify-center"><span class="font-icons pl-2 pr-2 align-middle">delete</span>Delete</button>
                         </form>
                     </div>
                 </div>
             </div>
-<?php }
+<?php
+        }
     }
 }

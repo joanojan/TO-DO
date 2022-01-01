@@ -35,6 +35,7 @@ class JSONAdapterController implements DBOperations
             $encodedTasks = json_encode($allTasks, JSON_PRETTY_PRINT);
             file_put_contents($this->tasksFile, $encodedTasks);
             $_SESSION["tasks"] = $this->loadAllTasks();//Refresh the tasks overview upon insertion to avoid showing the latest change
+            unset($_SESSION["errors"]);//Prevent showing an error message when inserting first task ever
             $_SESSION["messages"] = ["Tasca creada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
             $_SESSION["errors"] = ["S'ha produït un error durant la creació de la tasca.\n" . $e . "\n"];
@@ -120,7 +121,7 @@ class JSONAdapterController implements DBOperations
                     $flag1 = ($this->compareStringWords($value,$text));
                 }
                 if($key == "name"){//en el cas que hi hagi una coincidencia amb l'autor aixeco una altra bandera
-                    $flag2 = ($this->compareStringWords($value,$name)) ;
+                    $flag2 = ($this->compareStringWords($value,$name));
                 }
                 if($key == "status"){
                     if($value == $status)//si l'estat de la tasca coincideix amb l'estat que hom cerca
@@ -137,6 +138,9 @@ class JSONAdapterController implements DBOperations
                     }  
                 }
             }
+        }
+        if($tasksFound == []){
+            $_SESSION["errors"] = ["No s'ha trobat cap tasca amb aquest criteri de cerca"];
         }
         return $tasksFound;          
     }
