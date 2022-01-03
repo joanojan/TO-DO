@@ -1,5 +1,6 @@
 <?php
 include_once(ROOT_PATH . '/app/controllers/JSONAdapterController.php');
+include_once(ROOT_PATH . '/app/controllers/MySQLAdapterController.php');
 /**
  * Database connection singleton. Receives which type of DB we want to use for the session.
  * @author Albert Garcia
@@ -18,6 +19,10 @@ class DBConnectionController {
         }
         if ($database == "JSON"){
             DBConnectionController::$connection->db = new JSONAdapterController();
+        } else if ($database == "mysql") {
+            DBConnectionController::$connection->db = new MySQLAdapterController();
+        } else if ($database == "mongodb"){
+            //TODO
         }
         return DBConnectionController::$connection->db;
     }
