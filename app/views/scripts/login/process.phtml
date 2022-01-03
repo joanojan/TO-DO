@@ -1,0 +1,57 @@
+<?php 
+//Start general app controller
+$controller = new ApplicationController();
+//Check login status
+$controller->checkLoginStatus();
+/**
+ * we must check the action to render the new content 
+ * $_SESSION["tasks"]
+ */
+
+//Load all tasks?
+if (isset($_POST["loadAllTasks"])) {
+    unset($_SESSION["editingTask"]);
+    $_SESSION["tasks"] = $controller->connect()->loadAllTasks();
+    $controller->showEmptyTasksMsg();
+}
+//Searching for some task... 
+if (isset($_POST["search"])){
+    unset($_SESSION["editingTask"]);
+    $_SESSION["tasks"] = $controller->connect()->findTask($_POST["task"],$_POST["name"],$_POST["status"]);
+}
+//Insert new task?
+if (isset($_POST["insertTask"])) {
+    unset($_SESSION["editingTask"]);
+    $task = [
+        "task" => $_POST["task"],
+        "name" => $_SESSION["loggedUser"]["name"]
+    ];
+    $controller->connect()->insertTask($task);
+}
+//Delete a task?
+if (isset($_POST["deleteTask"])) {
+    unset($_SESSION["editingTask"]);
+    $controller->connect()->deleteTask($_POST['deleteTask']);
+}
+//Edit a task?
+if (isset($_POST["editTask"])) {
+    unset($_SESSION["editingTask"]);
+    $_SESSION["tasks"] = $controller->connect()->loadAllTasks(); //Prevent conflicts if a refresh is triggered on the edit mode
+    $arrayIndex = array_key_first($_POST); //Fetch the name of the element in the POST array, as it's dynamic
+    $index = strpos($arrayIndex, "-") + 1; //Set the index where first number of id occurs
+    $taskId = substr($arrayIndex, $index); //Extract the number
+    //Store the ID of task being edited
+    $_SESSION["editingTask"] = $taskId;
+    $_SESSION["tasks"] = [$_SESSION["tasks"][$taskId]]; //Show only the task we are editing
+    //End step in next view: $controller->connect()->editTask($taskId, $task, $status);
+}
+
+if(isset($_POST["confirmEdit"])){
+    unset($_SESSION["editingTask"]);
+
+    $controller->connect()->editTask($_SESSION["tasks"][0]["id"], $_POST["task"], $_POST["status"]);
+}
+
+header("Location:".WEB_ROOT."/welcome");
+exit();
+?>
