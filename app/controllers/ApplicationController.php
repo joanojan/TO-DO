@@ -126,7 +126,7 @@ class ApplicationController extends Controller
             } else if ($task["status"] == "Finished") {
                 $color = "green";
                 $icon = "task_alt";
-                $finish = '<p class="lg:ml-2 sm:mt-2 lg:m-0 whitespace-normal lg:pl-2 lg:pr-2 p-1"><span class="font-icons text-lg mr-0.5 align-middle">schedule</span> ' . $task["timestampEnd"] . '</p>';
+                $finish = '<p class="lg:ml-4 lg:m-0 lg:pl-4 lg:pr-4 pl-1 pr-1 my-auto"><span class="font-icons text-lg mr-0.5 align-middle">schedule</span> ' . $task["timestampEnd"] . '</p>';
             }
 ?>
             <!--Task card-->
@@ -140,7 +140,7 @@ class ApplicationController extends Controller
                     <!--Author and start date-->
                     <div class="flex flex-nowrap flex-auto items-center justify-left mb-1">
                         <span class="font-icons text-2xl p-2">face</span>
-                        <p class="whitespace-normal inline"><?= $task["name"]; ?> on <?= $task["timestampStart"]; ?></p>
+                        <p class="whitespace-normal inline"><b><?= $task["name"]; ?></b>, <?= $task["timestampStart"]; ?></p>
                     </div>
                 </div>
                 <div class="md:w-[30%] w-full ml-2">

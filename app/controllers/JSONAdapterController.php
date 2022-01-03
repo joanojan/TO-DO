@@ -26,7 +26,7 @@ class JSONAdapterController implements DBOperations
             $newTask["id"] = $lastId;
 
             $creationTime = new DateTime(); //Current timestamp
-            $newTask["timestampStart"] = $creationTime->format("l, j/M/y H:i"); //Creation timestamp, format like "Wedneday, 3/Nov/21 18:45"
+            $newTask["timestampStart"] = $creationTime->format("l, j M y H:i"); //Creation timestamp, format like "Wedneday, 3 Nov 21 18:45"
             $newTask["timestampEnd"] = "Pending"; //Newly created, can't have a finished time yet
             $newTask["task"] = $task["task"]; //Contents of the task
             $newTask["name"] = $task["name"]; //User who created the task
@@ -63,7 +63,7 @@ class JSONAdapterController implements DBOperations
 
             if($status == "Finished"){
                 $creationTime = new DateTime();
-                $allTasks[$taskId]["timestampEnd"] = $creationTime->format("l, j/M/y H:i");
+                $allTasks[$taskId]["timestampEnd"] = $creationTime->format("l, j M y H:i");
             }
             $encodedTasks = json_encode($allTasks, JSON_PRETTY_PRINT);
             file_put_contents($this->tasksFile, $encodedTasks);

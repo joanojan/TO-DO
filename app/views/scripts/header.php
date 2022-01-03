@@ -42,7 +42,8 @@ unset($_POST);
                         '0%': {transform: 'translateX(200%)'},
                         '20%': {transform: 'translateX(0%)'},
                         '80%': {transform: 'translateX(0%)', opacity: '1'},
-                        '100%': {opacity: '0'},
+                        '99%': {opacity: '0'},
+                        '100%': {transform: 'translate(200%)'}
                     },
                 },
                 animation: {
@@ -58,7 +59,7 @@ unset($_POST);
     <header class="flex flex-nowrap">
         <div class="bg-yellow-600 text-white p-4 py-2 lg:w-[80%] md:w-[60%] w-[50%] text-xl flex items-center shrink">
             <h1 class="text-sm pl-2 ml-2">
-                <span class="font-rock3d text-4xl">TO-DO</span> by A&J v0.5
+                <span class="font-rock3d text-4xl">TO-DO</span> by A&J v1.0
             </h1>
         </div>
         <div class="bg-yellow-600 text-white p-4 py-2 flex place-items-center justify-center lg:w-[10%] md:w-[20%] w-25%">
