@@ -73,7 +73,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
 
                         <select name="status" class="rounded border border-black m-2 p-1 w-11/12">
                             <option value="pending">Pendent</option>
-                            <option value="in progress">En execució</option><!--compte, que la liem amb els noms!!-->
+                            <option value="in progress">En curs</option><!--compte, que la liem amb els noms!!-->
                             <option value="finished">Finalitzada</option>
 
                         </select>
@@ -87,7 +87,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
     <!--Right menu (tasks)-->
     <div id="right-menu" class="md:mr-8 md:mt-2 md:ml-8 m-2 w-full">
         <?php if (isset($_SESSION["tasks"])) {
-        ?><h1 class="font-rock3d md:text-4xl text-white m-2 p-2 mx-auto md:text-left md:mx-0 text-center text-2xl">TASQUES</h1>
+        ?><h1 class="font-rock3d text-white font-bold m-2 p-2 md:p-2 w-[100%] mx-auto md:text-left md:mx-0 text-center text-4xl bg-gradient-to-l from-transparent via-yellow-700/50 to-transparent rounded-lg md:bg-none">TASQUES</h1>
         <?php
             $controller->renderTasks();
         }
@@ -107,7 +107,7 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
                                                     } ?>>Pendent</option>
                             <option value="In progress" <?php if ($_SESSION["tasks"][0]["status"] == "In progress") {
                                                             echo "selected";
-                                                        } ?>>En execució</option>
+                                                        } ?>>En curs</option>
                             <option value="Finished" <?php if ($_SESSION["tasks"][0]["status"] == "Finished") {
                                                             echo "selected";
                                                         } ?>>Finalitzada</option>

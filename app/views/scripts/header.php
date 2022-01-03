@@ -54,7 +54,7 @@ unset($_POST);
     </script>
 </head>
 
-<body class="overflow-x-hidden overflow-y-auto md:bg-[url('../web/images/david-travis-5bYxXawHOQg-unsplash.jpg')] bg-[url('../web/images/hannah-olinger-8eSrC43qdro-unsplash.jpg')] backdrop-saturate-50 bg-cover bg-blend-saturation bg-no-repeat">
+<body class="overflow-x-hidden overflow-y-auto md:bg-[url('../web/images/david-travis-5bYxXawHOQg-unsplash.jpg')] bg-[url('../web/images/hannah-olinger-8eSrC43qdro-unsplash.jpg')] backdrop-saturate-0 bg-cover bg-blend-saturation bg-no-repeat">
     <!--Header-->
     <header class="flex flex-nowrap">
         <div class="bg-yellow-600 text-white p-4 py-2 lg:w-[80%] md:w-[60%] w-[50%] text-xl flex items-center shrink">
