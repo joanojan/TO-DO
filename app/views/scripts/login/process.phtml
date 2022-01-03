@@ -12,6 +12,7 @@ $controller->checkLoginStatus();
 if (isset($_POST["loadAllTasks"])) {
     unset($_SESSION["editingTask"]);
     $_SESSION["tasks"] = $controller->connect()->loadAllTasks();
+    $controller->showEmptyTasksMsg();
 }
 //Searching for some task... 
 if (isset($_POST["search"])){

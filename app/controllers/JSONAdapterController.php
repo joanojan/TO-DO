@@ -26,7 +26,7 @@ class JSONAdapterController implements DBOperations
             $newTask["id"] = $lastId;
 
             $creationTime = new DateTime(); //Current timestamp
-            $newTask["timestampStart"] = $creationTime->format("l, j/M/y H:i"); //Creation timestamp, format like "Wedneday, 3/Nov/21 18:45"
+            $newTask["timestampStart"] = $creationTime->format("l, j M y H:i"); //Creation timestamp, format like "Wedneday, 3 Nov 21 18:45"
             $newTask["timestampEnd"] = "Pending"; //Newly created, can't have a finished time yet
             $newTask["task"] = $task["task"]; //Contents of the task
             $newTask["name"] = $task["name"]; //User who created the task
@@ -35,7 +35,9 @@ class JSONAdapterController implements DBOperations
             $encodedTasks = json_encode($allTasks, JSON_PRETTY_PRINT);
             file_put_contents($this->tasksFile, $encodedTasks);
             $_SESSION["tasks"] = $this->loadAllTasks();//Refresh the tasks overview upon insertion to avoid showing the latest change
-            unset($_SESSION["errors"]);//Prevent showing an error message when inserting first task ever
+            if(count($_SESSION["tasks"]) == 1) {//Prevent showing an error message when inserting first task ever
+                unset($_SESSION["errors"]);
+            }
             $_SESSION["messages"] = ["Tasca creada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
             $_SESSION["errors"] = ["S'ha produït un error durant la creació de la tasca.\n" . $e . "\n"];
@@ -61,7 +63,7 @@ class JSONAdapterController implements DBOperations
 
             if($status == "Finished"){
                 $creationTime = new DateTime();
-                $allTasks[$taskId]["timestampEnd"] = $creationTime->format("l, j/M/y H:i");
+                $allTasks[$taskId]["timestampEnd"] = $creationTime->format("l, j M y H:i");
             }
             $encodedTasks = json_encode($allTasks, JSON_PRETTY_PRINT);
             file_put_contents($this->tasksFile, $encodedTasks);
@@ -140,6 +142,7 @@ class JSONAdapterController implements DBOperations
             }
         }
         if($tasksFound == []){
+            unset($_SESSION["errors"]);
             $_SESSION["errors"] = ["No s'ha trobat cap tasca amb aquest criteri de cerca"];
         }
         return $tasksFound;          
@@ -195,6 +198,7 @@ class JSONAdapterController implements DBOperations
     /**
      * Loads all tasks on json file. Returns them as an associative array.
      * @return array Array of tasks.
+     * @author Albert Garcia
      */
     public function loadAllTasks()
     {
@@ -209,6 +213,7 @@ class JSONAdapterController implements DBOperations
      * For JSON format, it is expected to receive an associative array where the key is the user ID, and the values 
      * are an array with user, password, and name keys and its values. Used to create a new user instance for the app.
      * @return array [userId => [user=>xxx, password=>xxx, name=>xxx]]
+     * @author Albert Garcia
      */
     public function retrieveUserData()
     {
