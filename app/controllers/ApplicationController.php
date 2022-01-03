@@ -99,14 +99,21 @@ class ApplicationController extends Controller
     }
 
     /**
+     * Returns an error message when no tasks are stored in the database.
+     * @author Albert Garcia
+     */
+    public function showEmptyTasksMsg()
+    {
+        if ((!isset($_SESSION["tasks"]) || count($_SESSION["tasks"]) < 1) && !isset($_POST["search"])) {
+            $_SESSION["errors"] = ["No hi ha cap tasca encara..."];
+        }
+    }
+
+    /**
      * Render the requested tasks only. They should be stored in $_SESSION["tasks"] 
      */
     public function renderTasks()
     {
-        if (!isset($_SESSION["tasks"]) || $_SESSION["tasks"] == null) {
-            $_SESSION["errors"] = ["No hi ha cap tasca encara..."];
-            return;
-        }
 
         foreach ($_SESSION["tasks"] as $task) {
             //Render statuses dynamically
