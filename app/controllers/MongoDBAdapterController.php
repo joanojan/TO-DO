@@ -163,8 +163,12 @@ class MongoDBAdapterController implements DBOperations
      */
     public function loadAllTasks()
     {
-        //TODO
-        return array();
+        $results = $this->taskCol->find();
+        $allTasksArr = [];
+        foreach ($results as $task){
+            array_push($allTasksArr, $task);
+        }
+        return $allTasksArr;
     }
 
     /**
