@@ -16,6 +16,7 @@ class MongoDBAdapterController implements DBOperations
 
     /**
      * Adapter constructor for Mongo DB operations.
+     * For testing purposes, connects to localhost and populates a user collection with the data necessary for our tests.
      * @param string connectionURI - Admits a string that can be used in future to connect to a remote cluster
      * @author Albert Garcia
      */
@@ -182,28 +183,10 @@ class MongoDBAdapterController implements DBOperations
         } catch (Exception $e) {
             echo "Unable to find this task.\n" . $e->getMessage();
         }
-        return $foundTasks;
-    }
-
-    /**
-     * Return true if any word matches
-     * Case insensitive
-     * Words are separated by space, semicolon, coma or dots.
-     * Any special character is just part of the word
-     * @author Joan Vila Valls
-     */
-    public function compareStringWords(string $s1, string $s2): bool
-    {
-        $s1 = preg_split("/[\s,;\.]+/", $s1);
-        $s2 = preg_split("/[\s,;\.]+/", $s2);
-        foreach ($s1 as $word) {
-            foreach ($s2 as $cmpWord) {
-                if (strcasecmp($word, $cmpWord) == 0) {
-                    return true;
-                }
-            }
+        if(count($foundTasks) == 0){
+            $_SESSION["errors"] = ["No s'ha trobat cap tasca amb aquests criteris de cerca..."];
         }
-        return false;
+        return $foundTasks;
     }
 
     /**
