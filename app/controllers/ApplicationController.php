@@ -96,8 +96,12 @@ class ApplicationController extends Controller
     public function connect()
     {
         $req = new Request();
-        $database = $req->getParam('db-type');
-        return DBConnectionController::getInstance($database);
+        if($req->getParam('db-type') != null){
+            if(!isset($_SESSION['db-type']) || $_SESSION['db-type'] != $req->getParam('db-type')){
+                $_SESSION['db-type'] = $req->getParam('db-type');
+            }
+        }        
+        return DBConnectionController::getInstance($_SESSION['db-type']);
     }
 
     /**
