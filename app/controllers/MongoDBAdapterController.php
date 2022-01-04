@@ -104,7 +104,7 @@ class MongoDBAdapterController implements DBOperations
                 $finishedTime = $creationTime->format("l, j M y H:i");
             }
             $this->taskCol->updateOne(
-                ['_id' => $taskId],
+                ['_id' => new MongoDB\BSON\ObjectID($taskId)],
                 ['$set' => ['task'=>$task, 'status'=>$status, 'timestampEnd'=>$finishedTime]]
             );
             
