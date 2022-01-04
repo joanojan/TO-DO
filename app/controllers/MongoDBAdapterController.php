@@ -90,10 +90,13 @@ class MongoDBAdapterController implements DBOperations
     }
 
     /**
+     * Allows to edit a task in the mongo database, task collection. Gets a taskId by parameter and
+     * the new task and status. If the status changes to finish, it takes the timestamp of the moment and adds it
+     * to the document. Shows messages to the user in the end.
      * @param int taskId - id of the task to change
      * @param string task - Contents of the task text
      * @param string status - Status of the task
-     * @author 
+     * @author Albert Garcia
      */
     public function editTask($taskId, $task, $status)
     {
@@ -107,7 +110,7 @@ class MongoDBAdapterController implements DBOperations
                 ['_id' => new MongoDB\BSON\ObjectID($taskId)],
                 ['$set' => ['task'=>$task, 'status'=>$status, 'timestampEnd'=>$finishedTime]]
             );
-            
+
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon insertion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca modificada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
@@ -116,13 +119,16 @@ class MongoDBAdapterController implements DBOperations
     }
 
     /**
-     *
+     * Deletes the document with the matching id in the mongo task collection.
      * @param int taskId - the ID of the task to delete
+     * @author Albert Garcia
      */
     public function deleteTask($taskId)
     {
         try {
-            //TODO
+            $this->taskCol->deleteOne(
+                ['_id' => new MongoDB\BSON\ObjectID($taskId)]
+            );
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon deletion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca eliminada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
