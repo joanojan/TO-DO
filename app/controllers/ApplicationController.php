@@ -91,8 +91,6 @@ class ApplicationController extends Controller
 
     /**
      * Returns a connection to appropriate database.
-     * TODO: once the rest of databases are implemented, refactor to admit a database by parameter upon login for the rest
-     * of the session.
      */
     public function connect()
     {
