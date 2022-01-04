@@ -102,13 +102,13 @@ class MongoDBAdapterController implements DBOperations
     {
         try {
             $finishedTime = "Pending";
-            if($status == "Finished"){
+            if ($status == "Finished") {
                 $creationTime = new DateTime();
                 $finishedTime = $creationTime->format("l, j M y H:i");
             }
             $this->taskCol->updateOne(
                 ['_id' => new MongoDB\BSON\ObjectID($taskId)],
-                ['$set' => ['task'=>$task, 'status'=>$status, 'timestampEnd'=>$finishedTime]]
+                ['$set' => ['task' => $task, 'status' => $status, 'timestampEnd' => $finishedTime]]
             );
 
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon insertion to avoid showing the latest change
@@ -153,17 +153,34 @@ class MongoDBAdapterController implements DBOperations
         $foundTasks = [];
         try {
             $find = null;
-            if($id != null){//We want to find a particular task by its id
-                $find = $this->taskCol->find(['_id'=> new MongoDB\BSON\ObjectID($id)]);
+            if ($id != null) { //We want to find a particular task by its id
+                $find = $this->taskCol->find(['_id' => new MongoDB\BSON\ObjectID($id)]);
             } else {
-                //TODO
+                //Set the filters for the search, case insensitive
+                $searchFields = [
+                    'task' => ['$regex' => $text, '$options' => 'i'],
+                    'name' => ['$regex' => $name, '$options' => 'i'],
+                    'status' => ['$regex' => $status, '$options' => 'i'],
+                ];
+                //Take out fields not used for this search
+                if ($text == "") {
+                    unset($searchFields['task']);
+                }
+                if ($name == "") {
+                    unset($searchFields['name']);
+                }
+                //Status will always have a value
+
+                $find = $this->taskCol->find($searchFields); //Get a cursor with all matching documents
+
             }
+            //Prepare all results as a Task object
             foreach ($find as $task) {
                 $newTask = new Task($task);
                 array_push($foundTasks, $newTask);
             }
         } catch (Exception $e) {
-            echo "Unable to find this task.\n". $e->getMessage();
+            echo "Unable to find this task.\n" . $e->getMessage();
         }
         return $foundTasks;
     }
