@@ -14,6 +14,11 @@ class MongoDBAdapterController implements DBOperations
     private $userCol = null;
     private $taskCol = null;
 
+    /**
+     * Adapter constructor for Mongo DB operations.
+     * @param string connectionURI - Admits a string that can be used in future to connect to a remote cluster
+     * @author Albert Garcia
+     */
     public function __construct($connectionURI)
     {
         $this->connectionURI = $connectionURI; //Prepared for connection to actual cluster out of local dev
@@ -44,7 +49,7 @@ class MongoDBAdapterController implements DBOperations
             }
             $this->taskCol = $this->db->tasks;
         } catch (Exception $e) {
-            echo "Unable to connect to MongoDB\n" . $e;
+            echo "Unable to connect to MongoDB\n" . $e->getMessage();
         }
     }
 
@@ -52,7 +57,7 @@ class MongoDBAdapterController implements DBOperations
      * Inserts a new document into the tasks collection of the mongo db.
      * Receives the data for the task via the $task argument, and uses its information to write the new document.
      * @param array task data fetched from the create task form view, namely the task content ("task") and user who submitted it ("name")
-     * @author
+     * @author Albert Garcia
      */
     public function insertTask($task)
     {
@@ -80,7 +85,7 @@ class MongoDBAdapterController implements DBOperations
             }
             $_SESSION["messages"] = ["Tasca creada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
-            $_SESSION["errors"] = ["S'ha produït un error durant la creació de la tasca.\n" . $e . "\n"];
+            $_SESSION["errors"] = ["S'ha produït un error durant la creació de la tasca.\n" . $e->getMessage() . "\n"];
         }
     }
 
@@ -93,11 +98,20 @@ class MongoDBAdapterController implements DBOperations
     public function editTask($taskId, $task, $status)
     {
         try {
-            //TODO
+            $finishedTime = "Pending";
+            if($status == "Finished"){
+                $creationTime = new DateTime();
+                $finishedTime = $creationTime->format("l, j M y H:i");
+            }
+            $this->taskCol->updateOne(
+                ['_id' => $taskId],
+                ['$set' => ['task'=>$task, 'status'=>$status, 'timestampEnd'=>$finishedTime]]
+            );
+            
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon insertion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca modificada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
-            $_SESSION["errors"] = ["S'ha produït un error durant l'edició de la tasca.\n" . $e . "\n"];
+            $_SESSION["errors"] = ["S'ha produït un error durant l'edició de la tasca.\n" . $e->getMessage() . "\n"];
         }
     }
 
@@ -112,22 +126,40 @@ class MongoDBAdapterController implements DBOperations
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon deletion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca eliminada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
-            $_SESSION["errors"] = ["S'ha produït un error durant l'eliminació de la tasca.\n" . $e . "\n"];
+            $_SESSION["errors"] = ["S'ha produït un error durant l'eliminació de la tasca.\n" . $e->getMessage() . "\n"];
         }
     }
 
     /**
-     * Es pot buscar per autor o per contingut del nom de tasca, o simplement per estat, 
-     * el qual sempre formarà part de la cerca
-     * @author 
+     * Retrieve a certain task.
+     * A task can be queried by its body ($text), its author($name), its status ($status), a combination of either,
+     * or just the status.
+     * or if we give it an $id instead, it will return that object within an array.
+     * @param string text - body of the task
+     * @param string name - author of the task
+     * @param string status - status of task
+     * @param string id - retrieve a specific task using its id on mongo db
+     * @author Albert Garcia
+     * @return array with task(s)
      */
-    public function findTask(string $text, string $name, string $status): array
+    public function findTask(string $text, string $name, string $status, ?string $id = null): array
     {
+        $foundTasks = [];
         try {
-            //TODO
+            $find = null;
+            if($id != null){//We want to find a particular task by its id
+                $find = $this->taskCol->find(['_id'=> new MongoDB\BSON\ObjectID($id)]);
+            } else {
+                //TODO
+            }
+            foreach ($find as $task) {
+                $newTask = new Task($task);
+                array_push($foundTasks, $newTask);
+            }
         } catch (Exception $e) {
+            echo "Unable to find this task.\n". $e->getMessage();
         }
-        return array();
+        return $foundTasks;
     }
 
     /**

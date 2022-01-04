@@ -22,7 +22,7 @@ class MySQLAdapterController implements DBOperations
             }
             $_SESSION["messages"] = ["Tasca creada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
-            $_SESSION["errors"] = ["S'ha produït un error durant la creació de la tasca.\n" . $e . "\n"];
+            $_SESSION["errors"] = ["S'ha produït un error durant la creació de la tasca.\n" . $e->getMessage() . "\n"];
         }
     }
 
@@ -39,7 +39,7 @@ class MySQLAdapterController implements DBOperations
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon insertion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca modificada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
-            $_SESSION["errors"] = ["S'ha produït un error durant l'edició de la tasca.\n" . $e . "\n"];
+            $_SESSION["errors"] = ["S'ha produït un error durant l'edició de la tasca.\n" . $e->getMessage() . "\n"];
         }
     }
 
@@ -54,7 +54,7 @@ class MySQLAdapterController implements DBOperations
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon deletion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca eliminada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
-            $_SESSION["errors"] = ["S'ha produït un error durant l'eliminació de la tasca.\n" . $e . "\n"];
+            $_SESSION["errors"] = ["S'ha produït un error durant l'eliminació de la tasca.\n" . $e->getMessage() . "\n"];
         }
     }
 
@@ -63,7 +63,7 @@ class MySQLAdapterController implements DBOperations
      * el qual sempre formarà part de la cerca
      * @author 
      */
-    public function findTask(string $text, string $name, string $status): array
+    public function findTask(string $text, string $name, string $status, ?string $id = null): array
     {
         try {
             //TODO
