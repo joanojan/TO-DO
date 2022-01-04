@@ -133,7 +133,8 @@ class MongoDBAdapterController implements DBOperations
     }
 
     /**
-     * 
+     * Check the provided user data against the data stored on the users collection. If a username and password exist and match,
+     * returns true as it is a valid user.
      * @param array $userData has username in index 0, password in index 1
      * @return object boolean true if user exists, false if not
      * @author 
@@ -144,12 +145,15 @@ class MongoDBAdapterController implements DBOperations
         $user = ["user" => $userData[0], "password" => $userData[1]];
 
         try {
-            //TODO 
-            return true;
+            $userRecord = $this->userCol->findOne(['user'=>$user["user"], 'password' => $user["password"]]);
+            if($userRecord != null){
+                $this->currentUser = $userRecord;
+                return true;
+            }
+            throw new Exception;            
         } catch (Exception $e) {
-        }
-
-        return false;
+            return false;
+        }        
     }
 
     /**
