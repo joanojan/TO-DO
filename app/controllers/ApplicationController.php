@@ -2,6 +2,7 @@
 
 include_once(ROOT_PATH . '/app/controllers/DBConnectionController.php');
 include_once(ROOT_PATH . '/app/models/User.class.php');
+include_once(ROOT_PATH . '/app/models/Task.class.php');
 /**
  * Base controller for the application.
  * Add general things in this controller.
@@ -116,12 +117,22 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Render the requested tasks only. They should be stored in $_SESSION["tasks"] 
+     * Render the requested tasks only. They should be stored in $_SESSION["tasks"] as either arrays or Task objects
      */
     public function renderTasks()
     {
 
         foreach ($_SESSION["tasks"] as $task) {
+            //It might be a Task object, we need to obtain the values from the getters
+            if(gettype($task) === "object"){
+                $tempTask["id"] = $task->getId();
+                $tempTask["task"] = $task->getTask();
+                $tempTask["name"] = $task->getName();
+                $tempTask["timestampStart"] = $task->getTimestampStart();
+                $tempTask["timestampEnd"] =$task->getTimestampEnd();
+                $tempTask["status"] = $task->getStatus();
+                $task = $tempTask;
+            }
             //Render statuses dynamically
             $color = "red";
             $icon = "flag";

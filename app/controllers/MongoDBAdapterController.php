@@ -1,6 +1,7 @@
 <?php
 include_once(ROOT_PATH . "/app/controllers/DBOperations.php");
 require_once(ROOT_PATH . "/vendor/autoload.php");
+require_once(ROOT_PATH . "/app/models/Task.class.php");
 /**
  * This adapter translates code in our app to a format valid to store to and retrieve from a MongoDB database.
  * @author Albert Garcia
@@ -48,13 +49,31 @@ class MongoDBAdapterController implements DBOperations
     }
 
     /**
+     * Inserts a new document into the tasks collection of the mongo db.
+     * Receives the data for the task via the $task argument, and uses its information to write the new document.
      * @param array task data fetched from the create task form view, namely the task content ("task") and user who submitted it ("name")
      * @author
      */
     public function insertTask($task)
     {
         try {
-            //TODO
+            $creationTime = new DateTime(); //Current timestamp
+            $newTask["timestampStart"] = $creationTime->format("l, j M y H:i"); //Creation timestamp, format like "Wedneday, 3 Nov 21 18:45"
+            $newTask["timestampEnd"] = "Pending"; //Newly created, can't have a finished time yet
+            $newTask["task"] = $task["task"]; //Contents of the task
+            $newTask["name"] = $task["name"]; //User who created the task
+            $newTask["status"] = "Pending"; //Newly created, pending by default
+
+            $this->taskCol->insertOne(
+                [
+                    "task" => $newTask["task"],
+                    "name" => $newTask["name"],
+                    "timestampStart" => $newTask["timestampStart"],
+                    "timestampEnd" => $newTask["timestampEnd"],
+                    "status" => $newTask["status"],
+                ]
+            );
+
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon insertion to avoid showing the latest change
             if (count($_SESSION["tasks"]) == 1) { //Prevent showing an error message when inserting first task ever
                 unset($_SESSION["errors"]);
@@ -137,7 +156,7 @@ class MongoDBAdapterController implements DBOperations
      * returns true as it is a valid user.
      * @param array $userData has username in index 0, password in index 1
      * @return object boolean true if user exists, false if not
-     * @author 
+     * @author Albert Garcia
      */
     public function checkLoginData($userData)
     {
@@ -145,28 +164,29 @@ class MongoDBAdapterController implements DBOperations
         $user = ["user" => $userData[0], "password" => $userData[1]];
 
         try {
-            $userRecord = $this->userCol->findOne(['user'=>$user["user"], 'password' => $user["password"]]);
-            if($userRecord != null){
+            $userRecord = $this->userCol->findOne(['user' => $user["user"], 'password' => $user["password"]]);
+            if ($userRecord != null) {
                 $this->currentUser = $userRecord;
                 return true;
             }
-            throw new Exception;            
+            throw new Exception;
         } catch (Exception $e) {
             return false;
-        }        
+        }
     }
 
     /**
-     * Loads all tasks on json file. Returns them as an associative array.
+     * Loads all tasks on mongo tasks collection. Returns them to the app as an associative array.
      * @return array Array of tasks.
-     * @author 
+     * @author Albert Garcia
      */
     public function loadAllTasks()
     {
         $results = $this->taskCol->find();
         $allTasksArr = [];
-        foreach ($results as $task){
-            array_push($allTasksArr, $task);
+        foreach ($results as $task) {
+            $newTask = new Task($task);
+            array_push($allTasksArr, $newTask);
         }
         return $allTasksArr;
     }
@@ -174,7 +194,7 @@ class MongoDBAdapterController implements DBOperations
     /**
      * After checking login details, if method is successful it assigns the valid user to $currentUser property.
      * This is a getter for that property.
-     * For JSON format, it is expected to receive an associative array where the key is the user ID, and the values 
+     * It is expected to receive an associative array where the key is the user ID, and the values 
      * are an array with user, password, and name keys and its values. Used to create a new user instance for the app.
      * @return array [userId => [user=>xxx, password=>xxx, name=>xxx]]
      * @author Albert Garcia
