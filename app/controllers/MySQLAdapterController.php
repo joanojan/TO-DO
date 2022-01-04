@@ -2,17 +2,15 @@
 include_once(ROOT_PATH . "/app/controllers/DBOperations.php");
 /**
  * This adapter translates code in our app to a format valid to store to and retrieve from a MySQL database.
- * @author Albert Garcia
+ * @author 
  */
 class MySQLAdapterController implements DBOperations
 {
     private $currentUser = null;
 
     /**
-     * Inserts a new task at the end of the tasks json files. To do so, it loads all entries as an array, adds the new 
-     * task as an array at the end from the parameter, encodes to json and writes all contents to the task file again.
      * @param array task data fetched from the create task form view, namely the task content ("task") and user who submitted it ("name")
-     * @author Albert Garcia
+     * @author
      */
     public function insertTask($task)
     {
@@ -29,13 +27,10 @@ class MySQLAdapterController implements DBOperations
     }
 
     /**
-     * Edit the contents of an existing task. Either the task, the status or both can be changed at any
-     * given time. Loads all tasks as an array, looks for the task with the same id as the parameter, and if any data is different,
-     * it changes it, to then save all tasks back again on file.
      * @param int taskId - id of the task to change
      * @param string task - Contents of the task text
      * @param string status - Status of the task
-     * @author Albert Garcia && Joan Vila Valls
+     * @author 
      */
     public function editTask($taskId, $task, $status)
     {
@@ -49,9 +44,7 @@ class MySQLAdapterController implements DBOperations
     }
 
     /**
-     * Deletes the selected task from the file based on its id passed by parameter.
-     * Loads all tasks, searches for the task with the id of the one to be erased, 
-     * takes it out of the array, and writes the rest of tasks to file.
+     *
      * @param int taskId - the ID of the task to delete
      */
     public function deleteTask($taskId)
@@ -68,7 +61,7 @@ class MySQLAdapterController implements DBOperations
     /**
      * Es pot buscar per autor o per contingut del nom de tasca, o simplement per estat, 
      * el qual sempre formarà part de la cerca
-     * @author Joan Vila Valls
+     * @author 
      */
     public function findTask(string $text, string $name, string $status): array
     {
@@ -101,12 +94,10 @@ class MySQLAdapterController implements DBOperations
     }
 
     /**
-     * It receives the username and password as an array $userData.
-     * Converts it to JSON to look up in the web/json/users.json file if the user exists and whether his password is correct.
-     * If it exists, returns a user object, if not, returns false.
+     * 
      * @param array $userData has username in index 0, password in index 1
      * @return object boolean true if user exists, false if not
-     * @author Albert Garcia
+     * @author 
      */
     public function checkLoginData($userData)
     {
@@ -126,7 +117,7 @@ class MySQLAdapterController implements DBOperations
     /**
      * Loads all tasks on json file. Returns them as an associative array.
      * @return array Array of tasks.
-     * @author Albert Garcia
+     * @author 
      */
     public function loadAllTasks()
     {
