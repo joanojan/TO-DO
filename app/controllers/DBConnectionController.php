@@ -20,7 +20,8 @@ class DBConnectionController {
         if ($database == "JSON"){
             DBConnectionController::$connection->db = new JSONAdapterController();
         } else if ($database == "mysql") {
-            DBConnectionController::$connection->db = new MySQLAdapterController();
+            include_once(ROOT_PATH . "/config/db.inc.php");
+            DBConnectionController::$connection->db = new MySQLAdapterController($dbh);
         } else if ($database == "mongodb"){
             //TODO
         }

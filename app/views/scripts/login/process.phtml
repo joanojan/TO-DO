@@ -42,8 +42,15 @@ if (isset($_POST["editTask"])) {
     $taskId = substr($arrayIndex, $index); //Extract the number
     //Store the ID of task being edited
     $_SESSION["editingTask"] = $taskId;
-    $_SESSION["tasks"] = [$_SESSION["tasks"][$taskId]]; //Show only the task we are editing
-    //End step in next view: $controller->connect()->editTask($taskId, $task, $status);
+    //$_SESSION["tasks"] = [$_SESSION["tasks"][$taskId]];
+    //per trobar la tasca corresponet i mostrar-la per pantalla creo un bucle:
+    foreach($_SESSION["tasks"] as $task){
+        if($task["id"] == $taskId){
+            $_SESSION["tasks"] = [$task] ; //Show only the task we are editing
+        //End step in next view: $controller->connect()->editTask($taskId, $task, $status);
+            break;
+        }
+    }         
 }
 
 if(isset($_POST["confirmEdit"])){

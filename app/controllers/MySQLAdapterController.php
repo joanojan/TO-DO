@@ -1,5 +1,6 @@
 <?php
 include_once(ROOT_PATH . "/app/controllers/DBOperations.php");
+
 /**
  * This adapter translates code in our app to a format valid to store to and retrieve from a MySQL database.
  * @author 
@@ -8,6 +9,12 @@ class MySQLAdapterController implements DBOperations
 {
     private $currentUser = null;
 
+    private $dbh;
+
+    function __construct(PDO $dbh) { 
+        $this->dbh = $dbh;
+    }
+
     /**
      * @param array task data fetched from the create task form view, namely the task content ("task") and user who submitted it ("name")
      * @author
@@ -15,13 +22,24 @@ class MySQLAdapterController implements DBOperations
     public function insertTask($task)
     {
         try {
-            //TODO
+            $user_id=$_SESSION["loggedUser"]["id"];
+            $sql = "INSERT INTO tasks (task, name, user_id) 
+                    VALUES (:task, :name, :user_id)";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindParam(':task', $task["task"]);
+            $stmt->bindParam(':name', $task["name"]);
+            $stmt->bindParam(':user_id', $user_id);
+
+            $stmt->execute();
+            
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon insertion to avoid showing the latest change
             if (count($_SESSION["tasks"]) == 1) { //Prevent showing an error message when inserting first task ever
                 unset($_SESSION["errors"]);
             }
             $_SESSION["messages"] = ["Tasca creada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
+            var_dump($e);
+            exit();
             $_SESSION["errors"] = ["S'ha produït un error durant la creació de la tasca.\n" . $e . "\n"];
         }
     }
@@ -30,12 +48,20 @@ class MySQLAdapterController implements DBOperations
      * @param int taskId - id of the task to change
      * @param string task - Contents of the task text
      * @param string status - Status of the task
-     * @author 
+     * @author Joan Vila Valls
      */
     public function editTask($taskId, $task, $status)
     {
         try {
-            //TODO
+
+            $this->dbh->exec("UPDATE tasks SET task=$task, status=$status WHERE id = $taskId");
+            
+            if($status == "Finished"){
+                $creationTime = new DateTime();
+                $creationTime->format("l, j M y H:i");
+                $this->dbh->exec("UPDATE tasks SET timestampEnd=$creationTime WHERE id =$taskId");
+            } 
+            
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon insertion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca modificada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
@@ -50,7 +76,8 @@ class MySQLAdapterController implements DBOperations
     public function deleteTask($taskId)
     {
         try {
-            //TODO
+            $stmt = $this->dbh->prepare("DELETE FROM tasks WHERE id = ?");
+            $stmt -> execute(array($taskId));
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon deletion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca eliminada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
@@ -65,8 +92,48 @@ class MySQLAdapterController implements DBOperations
      */
     public function findTask(string $text, string $name, string $status): array
     {
-        try {
-            //TODO
+        $flag1 = false;
+        $flag2 = false;
+        $tasksFound = array();
+        
+        $allTasksArr=$this->loadAllTasks(); 
+
+        try { 
+    
+            foreach ($allTasksArr as $element){
+    
+                foreach($element as $key => $value){
+                    if(!empty($value))
+                        $value=strtolower($value);//per evitar errors si li passen majuscules
+
+                    if($key == "task"){//si hi ha una paraula de la cerca dins el titol aixeco una bandera 
+                        $flag1 = ($this->compareStringWords($value,$text));
+                    }
+                    if($key == "name"){//en el cas que hi hagi una coincidencia amb l'autor aixeco una altra bandera
+                        $flag2 = ($this->compareStringWords($value,$name));
+                    }
+                    if($key == "status"){
+                        if($value == $status)//si l'estat de la tasca coincideix amb l'estat que hom cerca
+                        {
+                            if(empty($text) and empty($name)){//si els altres criteris de cerca són buits
+                                array_push($tasksFound,$element);
+                            } else if(empty($text) and $flag2){
+                                array_push($tasksFound,$element);
+                            } else if (empty($name) and $flag1){
+                                array_push($tasksFound,$element);
+                            } else if ($flag1 and $flag2){
+                                array_push($tasksFound,$element);
+                            }
+                        }  
+                    }
+                }
+            }
+            if($tasksFound == []){
+                unset($_SESSION["errors"]);
+                $_SESSION["errors"] = ["No s'ha trobat cap tasca amb aquest criteri de cerca"];
+            }
+            return $tasksFound; 
+            
         } catch (Exception $e) {
         }
         return array();
@@ -101,17 +168,19 @@ class MySQLAdapterController implements DBOperations
      */
     public function checkLoginData($userData)
     {
-
-        $user = ["user" => $userData[0], "password" => $userData[1]];
-
         try {
-            //TODO 
-            return true;
+            $stmt = $this->dbh->prepare("select * from users where user = ? and password = ?");
+            $stmt -> execute(array($userData[0], $userData[1]));
+            $user = $stmt -> fetch(PDO::FETCH_ASSOC);
+            if(!is_null($user)) {
+                $this->currentUser = $user;
+                MySQLAdapterController::$user_id = $user["id"];
+                return true;
+            }
+            else return false;
         } catch (Exception $e) {
-
+            echo "Error: " . $e->getMessage();
         }
-
-        return false;
     }
 
     /**
@@ -121,8 +190,15 @@ class MySQLAdapterController implements DBOperations
      */
     public function loadAllTasks()
     {
-        //TODO
-        return array();
+        try {
+            $stmt = $this->dbh->prepare("SELECT id, timestampStart, timestampEnd, task, name, status FROM tasks");
+            $stmt -> execute();
+            $allTasksArr = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+            return $allTasksArr;
+
+            } catch (Exception $e) {
+                echo "Error al carregar les tasques: " . $e->getMessage();
+            }
     }
 
     /**
