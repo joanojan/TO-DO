@@ -13,12 +13,7 @@ class MySQLAdapterController implements DBOperations
 
     public function __construct(PDO $dbh) { 
         $this->dbh = $dbh;
-        $this->createToDoMySQLDatabase();
-    }
-
-    public function __destruct()
-    {   
-        $this->dbh = null;
+        $this->createToDoMySQLDatabase(); // Crea la Base de dades si no existeix!
     }
 
     public function createToDoMySQLDatabase() {
@@ -87,7 +82,6 @@ class MySQLAdapterController implements DBOperations
             $stmt->bindParam(':user_id', $user_id);
 
             $stmt->execute();
-            $stmt = null; //eliminar referències per poder tancar la conexió a la BD
             
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon insertion to avoid showing the latest change
             if (count($_SESSION["tasks"]) == 1) { //Prevent showing an error message when inserting first task ever
@@ -116,7 +110,6 @@ class MySQLAdapterController implements DBOperations
                 $stmt = $this->dbh->prepare("UPDATE tasks SET timestampEnd=CURRENT_TIMESTAMP() WHERE id =?");
                 $stmt->execute(array($taskId));
             } 
-            $stmt = null;
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon insertion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca modificada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
@@ -134,7 +127,6 @@ class MySQLAdapterController implements DBOperations
 
             $stmt = $this->dbh->prepare("DELETE FROM tasks WHERE id = ?");
             $stmt -> execute(array($taskId));
-            $stmt = null; //eliminar referències per poder tancar la conexió a la BD
 
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon deletion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca eliminada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
@@ -231,7 +223,6 @@ class MySQLAdapterController implements DBOperations
             $stmt = $this->dbh->prepare("select * from users where user = ? and password = ?");
             $stmt -> execute(array($userData[0], $userData[1]));
             $user = $stmt -> fetch(PDO::FETCH_ASSOC);
-            $stmt = null; //eliminar referències per poder tancar la conexió a la BD
 
             if(!is_null($user)) {
                 $this->currentUser = $user;
@@ -264,7 +255,6 @@ class MySQLAdapterController implements DBOperations
                                             users ON tasks.user_id = users.id");
             $stmt -> execute();
             $allTasksArr = $stmt -> fetchAll(PDO::FETCH_ASSOC);
-            $stmt = null; //eliminar referències per poder tancar la conexió a la BD
 
             return $allTasksArr;
 
