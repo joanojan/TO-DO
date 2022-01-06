@@ -61,13 +61,27 @@ $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
        } catch(PDOException $e){
            echo "Error al crear la Base de Dades<br>" . $e->getMessage();
        }
-       $sql = "select * from users";
-       if (empty($dbh->exec($sql))){//si la taula usuaris és buida creo els usuaris
-           $sql = 'insert into users (id, user, password, name) values
-                                           ("1", "agarcia", "agarcia123", "Albert")
-                                           ("2", "rgonzalez", "rgonzalez123", "Rubén")
-                                           ("3", "jvila", "jvila123", "Joan")';
-       }
+$dbh = null;
+
+//omplir la taula users si és buida -> nova conexió, aquest cop a la BD to-do... hard coded :(
+try {
+
+  $dbh = new PDO("mysql:host=localhost; dbname=to-do", $user, $password);
+
+  $result = $dbh->query("select * from users");
+
+  if ($result->rowCount() == 0){
+
+            $sql = "INSERT INTO users (id, user, password, name) 
+                    VALUES ('1', 'agarcia', 'agarcia123', 'Albert'),
+                          ('2', 'ralcalde', 'ralcalde123', 'Rubén'),
+                          ('3', 'jvila', 'jvila123', 'Joan')";
+            $dbh->exec($sql);
+  } 
+} catch (PDOException $e){
+  echo "Error al fer l'INSERT a la taula users" . $e;
+}
 
 $dbh = null;
+
 ?>
