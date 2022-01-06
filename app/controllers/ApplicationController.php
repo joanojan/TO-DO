@@ -41,6 +41,9 @@ class ApplicationController extends Controller
 
     public function processLogout()
     {
+        if($_SESSION['db-type'] == "mysql") {
+            //TODO tancar la conexió a la BD!!
+        }
         $this->user = null;
         unset($_POST["logout"]);
         unset($_SESSION);

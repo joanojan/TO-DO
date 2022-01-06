@@ -3,7 +3,7 @@ include_once(ROOT_PATH . "/app/controllers/DBOperations.php");
 
 /**
  * This adapter translates code in our app to a format valid to store to and retrieve from a MySQL database.
- * @author 
+ * @author Mostly done by me, myself and I, mr. JOAN VILA VALLS xd
  */
 class MySQLAdapterController implements DBOperations
 {
@@ -11,26 +11,83 @@ class MySQLAdapterController implements DBOperations
 
     private $dbh;
 
-    function __construct(PDO $dbh) { 
+    public function __construct(PDO $dbh) { 
         $this->dbh = $dbh;
+        $this->createToDoMySQLDatabase();
+    }
+
+    public function __destruct()
+    {   
+        $this->dbh = null;
+    }
+
+    public function createToDoMySQLDatabase() {
+       
+       try{
+        $this->dbh->exec("
+                            SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+                            SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+                            SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+                            
+                            CREATE SCHEMA IF NOT EXISTS `to-do` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
+                            USE `to-do` ;
+                            
+                            CREATE TABLE IF NOT EXISTS `to-do`.`users` (
+                            `id` INT(11) NOT NULL AUTO_INCREMENT,
+                            `user` VARCHAR(15) NOT NULL,
+                            `password` VARCHAR(255) NOT NULL,
+                            `name` VARCHAR(45) NOT NULL,
+                            PRIMARY KEY (`id`),
+                            UNIQUE INDEX `username_UNIQUE` (`user` ASC) )
+                            ENGINE = InnoDB
+                            AUTO_INCREMENT = 4
+                            DEFAULT CHARACTER SET = utf8
+                            COLLATE = utf8_bin;
+                            
+                            CREATE TABLE IF NOT EXISTS `to-do`.`tasks` (
+                            `id` INT(11) NOT NULL AUTO_INCREMENT,
+                            `timestampStart` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+                            `timestampEnd` DATETIME NULL DEFAULT NULL,
+                            `task` MEDIUMTEXT NOT NULL,
+                            `status` ENUM('Pending', 'In progress', 'Finished') NOT NULL DEFAULT 'Pending' COMMENT 'Els noms en anglès coincidiràn amb els de l\'aplicació!',
+                            `user_id` INT(11) NOT NULL,
+                            PRIMARY KEY (`id`),
+                            INDEX `fk_Tasks_Users_idx` (`user_id` ASC) ,
+                            CONSTRAINT `fk_Tasks_Users`
+                                FOREIGN KEY (`user_id`)
+                                REFERENCES `to-do`.`users` (`id`)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE)
+                            ENGINE = InnoDB
+                            AUTO_INCREMENT = 19
+                            DEFAULT CHARACTER SET = utf8
+                            COLLATE = utf8_bin;
+                            
+                            SET SQL_MODE=@OLD_SQL_MODE;
+                            SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+                            SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS");
+
+       } catch(PDOException $e){
+           echo "Error al crear la Base de Dades<br>" . $e->getMessage();
+       }
     }
 
     /**
      * @param array task data fetched from the create task form view, namely the task content ("task") and user who submitted it ("name")
-     * @author
+     * @author Myself, mr. Joan Vila Valls
      */
     public function insertTask($task)
     {
         try {
-            $user_id=$_SESSION["loggedUser"]["id"];
-            $sql = "INSERT INTO tasks (task, name, user_id) 
-                    VALUES (:task, :name, :user_id)";
+            $user_id=$_SESSION["loggedUser"]["id"];//sorry for this, $currentUser was null! Any idea?
+            $sql = "INSERT INTO tasks (task, user_id) 
+                    VALUES (:task, :user_id)";
             $stmt = $this->dbh->prepare($sql);
             $stmt->bindParam(':task', $task["task"]);
-            $stmt->bindParam(':name', $task["name"]);
             $stmt->bindParam(':user_id', $user_id);
 
             $stmt->execute();
+            $stmt = null; //eliminar referències per poder tancar la conexió a la BD
             
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon insertion to avoid showing the latest change
             if (count($_SESSION["tasks"]) == 1) { //Prevent showing an error message when inserting first task ever
@@ -38,9 +95,7 @@ class MySQLAdapterController implements DBOperations
             }
             $_SESSION["messages"] = ["Tasca creada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
-            var_dump($e);
-            exit();
-            $_SESSION["errors"] = ["S'ha produït un error durant la creació de la tasca.\n" . $e . "\n"];
+            $_SESSION["errors"] = ["S'ha produït un error durant la creació de la tasca.\n"];
         }
     }
 
@@ -54,18 +109,18 @@ class MySQLAdapterController implements DBOperations
     {
         try {
 
-            $this->dbh->exec("UPDATE tasks SET task=$task, status=$status WHERE id = $taskId");
+            $stmt = $this->dbh->prepare("UPDATE tasks SET task=?, status=? WHERE id = ?");
+            $stmt->execute(array($task, $status, $taskId));
             
             if($status == "Finished"){
-                $creationTime = new DateTime();
-                $creationTime->format("l, j M y H:i");
-                $this->dbh->exec("UPDATE tasks SET timestampEnd=$creationTime WHERE id =$taskId");
+                $stmt = $this->dbh->prepare("UPDATE tasks SET timestampEnd=CURRENT_TIMESTAMP() WHERE id =?");
+                $stmt->execute(array($taskId));
             } 
-            
+            $stmt = null;
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon insertion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca modificada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
         } catch (Exception $e) {
-            $_SESSION["errors"] = ["S'ha produït un error durant l'edició de la tasca.\n" . $e . "\n"];
+            $_SESSION["errors"] = ["S'ha produït un error durant l'edició de la tasca.\n"];
         }
     }
 
@@ -76,10 +131,14 @@ class MySQLAdapterController implements DBOperations
     public function deleteTask($taskId)
     {
         try {
+
             $stmt = $this->dbh->prepare("DELETE FROM tasks WHERE id = ?");
             $stmt -> execute(array($taskId));
+            $stmt = null; //eliminar referències per poder tancar la conexió a la BD
+
             $_SESSION["tasks"] = $this->loadAllTasks(); //Refresh the tasks overview upon deletion to avoid showing the latest change
             $_SESSION["messages"] = ["Tasca eliminada correctament!\n"]; //Envia missatge per mostrar a la vista corresponent
+
         } catch (Exception $e) {
             $_SESSION["errors"] = ["S'ha produït un error durant l'eliminació de la tasca.\n" . $e . "\n"];
         }
@@ -88,7 +147,7 @@ class MySQLAdapterController implements DBOperations
     /**
      * Es pot buscar per autor o per contingut del nom de tasca, o simplement per estat, 
      * el qual sempre formarà part de la cerca
-     * @author 
+     * @author Joan Vila Valls
      */
     public function findTask(string $text, string $name, string $status): array
     {
@@ -136,7 +195,6 @@ class MySQLAdapterController implements DBOperations
             
         } catch (Exception $e) {
         }
-        return array();
     }
 
     /**
@@ -164,17 +222,19 @@ class MySQLAdapterController implements DBOperations
      * 
      * @param array $userData has username in index 0, password in index 1
      * @return object boolean true if user exists, false if not
-     * @author 
+     * @author Joan Vila Valls
      */
     public function checkLoginData($userData)
     {
         try {
+
             $stmt = $this->dbh->prepare("select * from users where user = ? and password = ?");
             $stmt -> execute(array($userData[0], $userData[1]));
             $user = $stmt -> fetch(PDO::FETCH_ASSOC);
+            $stmt = null; //eliminar referències per poder tancar la conexió a la BD
+
             if(!is_null($user)) {
                 $this->currentUser = $user;
-                MySQLAdapterController::$user_id = $user["id"];
                 return true;
             }
             else return false;
@@ -186,14 +246,26 @@ class MySQLAdapterController implements DBOperations
     /**
      * Loads all tasks on json file. Returns them as an associative array.
      * @return array Array of tasks.
-     * @author 
+     * @author Joan Vila Valls
      */
     public function loadAllTasks()
     {
         try {
-            $stmt = $this->dbh->prepare("SELECT id, timestampStart, timestampEnd, task, name, status FROM tasks");
+            $stmt = $this->dbh->prepare("SELECT 
+                                            tasks.id AS id,
+                                            tasks.timestampStart AS timestampStart,
+                                            tasks.timestampEnd AS timestampEnd,
+                                            tasks.task AS task,
+                                            users.name AS name,
+                                            tasks.status AS status
+                                        FROM
+                                            tasks
+                                                JOIN
+                                            users ON tasks.user_id = users.id");
             $stmt -> execute();
             $allTasksArr = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+            $stmt = null; //eliminar referències per poder tancar la conexió a la BD
+
             return $allTasksArr;
 
             } catch (Exception $e) {
