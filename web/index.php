@@ -1,5 +1,7 @@
 <?php
 
+
+
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors', 1);
 date_default_timezone_set('CET');
@@ -16,6 +18,9 @@ session_start();
 
 // includes the system routes. Define your own routes in this file
 include(ROOT_PATH . '/config/routes.php');
+
+//Creo la BD mysql i la inicialitzo si no existeix
+include_once(ROOT_PATH . "/config/createToDoMySQLDB.php");
 
 /**
  * Standard framework autoloader

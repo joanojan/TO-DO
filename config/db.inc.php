@@ -7,6 +7,7 @@
 $settings = parse_ini_file('settings.ini', true);
 
 try {
+
   // starts the connection to the database
 $dbh = new PDO(
   sprintf(
