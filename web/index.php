@@ -19,9 +19,6 @@ session_start();
 // includes the system routes. Define your own routes in this file
 include(ROOT_PATH . '/config/routes.php');
 
-//Creo la BD mysql i la inicialitzo si no existeix
-include_once(ROOT_PATH . "/config/createToDoMySQLDB.php");
-
 /**
  * Standard framework autoloader
  * @param string $className
