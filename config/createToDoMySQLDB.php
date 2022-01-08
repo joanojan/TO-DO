@@ -2,17 +2,42 @@
 /**
  * Crear la Base de Dades to-do si no existeix
  */
+
+/**
+ * Crearé la conexió sense especificar una Base de Dades, ja que encar l'hem de crear
+ */
+// parses the settings file
+$settings = parse_ini_file('settings.ini', true);
+
 try {
 
-// starts the connection to the database
-$password = "";
-$user = "root";
-$dbh = new PDO("mysql:host=localhost", $user, $password);
+  // starts the connection to the database
+$dbh = new PDO(
+  sprintf(
+    "mysql:host=%s",//sabem que el driver serà forçosament mysql...
+    $settings['database']['host'],
+  ),
+  $settings['database']['user'],
+  $settings['database']['password'],
+  array(PDO::ATTR_PERSISTENT => true)
+);
 // set the PDO error mode to exception
 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
   echo "Error: " .$e->getMessage();
 }
+
+// try {
+
+// // starts the connection to the database
+// $password = "";
+// $user = "root";
+// $dbh = new PDO("mysql:host=localhost", $user, $password);
+// // set the PDO error mode to exception
+// $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// } catch(PDOException $e) {
+//   echo "Error: " .$e->getMessage();
+// }
        
        try{
         $dbh->exec("
@@ -66,7 +91,20 @@ $dbh = null;
 //omplir la taula users si és buida -> nova conexió, aquest cop a la BD to-do... hard coded :(
 try {
 
-  $dbh = new PDO("mysql:host=localhost; dbname=to-do", $user, $password);
+  /**
+   * Creo una nova conexió a la Base de Dades, aquest cop sí que li haig de passar el nom de la BD...
+   */
+
+  $dbh = new PDO(
+    sprintf(
+      "mysql:host=%s;dbname=%s",
+      $settings['database']['host'],
+      $settings['database']['dbname']
+    ),
+    $settings['database']['user'],
+    $settings['database']['password'],
+    array(PDO::ATTR_PERSISTENT => true)
+  );
 
   $result = $dbh->query("select * from users");
 
