@@ -172,7 +172,7 @@ class MySQLAdapterController implements DBOperations
             $stmt -> execute(array($userData[0], $userData[1]));
             $user = $stmt -> fetch(PDO::FETCH_ASSOC);
 
-            if(!is_null($user)) {
+            if($user!=false) {
                 $this->currentUser = $user;
                 return true;
             }
