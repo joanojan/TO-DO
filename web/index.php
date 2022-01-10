@@ -1,5 +1,7 @@
 <?php
 
+
+
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors', 1);
 date_default_timezone_set('CET');
@@ -11,6 +13,8 @@ define('ROOT_PATH', realpath(dirname(__FILE__) . '/../'));
 // defines the cms path
 define('CMS_PATH', ROOT_PATH . '/lib/base/');
 
+//It needs to be included before starting the session so objects can be serialised and deserialised in session
+include_once(ROOT_PATH . "/app/models/Task.class.php");
 // starts the session
 session_start();
 
@@ -25,7 +29,7 @@ function autoloader($className) {
 	// controller autoloading
 	if (strlen($className) > 10 && substr($className, -10) == 'Controller') {
 		if (file_exists(ROOT_PATH . '/app/controllers/' . $className . '.php') == 1) {
-			require_once ROOT_PATH . '/app/controllers/' . $className . '.php';
+		require_once ROOT_PATH . '/app/controllers/' . $className . '.php';
 		}
 	}
 	else {
@@ -34,6 +38,9 @@ function autoloader($className) {
 		}
 		else if (file_exists(ROOT_PATH . '/lib/' . $className . '.php')) {
 			require_once ROOT_PATH . '/lib/' . $className . '.php';
+		}
+		else if (file_exists(ROOT_PATH . '/vendor/' . 'autoload.php')) {
+			require_once ROOT_PATH . '/vendor/autoload.php';
 		}
 		else {
 			require_once ROOT_PATH . '/app/models/'.$className.'.php';
@@ -46,3 +53,4 @@ spl_autoload_register('autoloader');
 
 $router = new Router();
 $router->execute($routes);
+?>

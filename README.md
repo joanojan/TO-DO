@@ -1,3 +1,16 @@
+# TO-DO by Albert Garcia & Joan Vila
+- To access the app, head to .../web/login in your browser.
+**Level 1**
+- Existing users and passwords can be found in web/json/users.json file within the project files.
+**Level 2**
+- Users and passwords remain identical to those in level 1.
+- If necessary, change the config/settings.ini data to match those of your local mysql instance.
+- For testing purposes, there are scripts in the app that will automatically create the necessary databases and populate the users if they are not found in your mysql instance when the app is run and a login is attempted.
+**Level 3**
+- Users and passwords remain identical to those in level 1.
+- Install composer dependencies (require mongodb/mongodb)
+- Start mongodb service in local environment and for testing purposes, there are scripts in the app that will automatically create the necessary databases and populate the users if they are not found in your mongodb instance when the app runs and a connection to mongodb is attempted.
+
 # PHP initial Project
 Main structure of php project. Folders / files:
 - **app**

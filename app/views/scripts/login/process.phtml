@@ -1,0 +1,71 @@
+<?php
+//Start general app controller
+$controller = new ApplicationController();
+//Check login status
+$controller->checkLoginStatus();
+/**
+ * we must check the action to render the new content 
+ * $_SESSION["tasks"]
+ */
+
+//Load all tasks?
+if (isset($_POST["loadAllTasks"])) {
+    unset($_SESSION["editingTask"]);
+    $_SESSION["tasks"] = $controller->connect()->loadAllTasks();
+    $controller->showEmptyTasksMsg();
+}
+//Searching for some task... 
+if (isset($_POST["search"])) {
+    unset($_SESSION["editingTask"]);
+    $_SESSION["tasks"] = $controller->connect()->findTask($_POST["task"], $_POST["name"], $_POST["status"]);
+}
+//Insert new task?
+if (isset($_POST["insertTask"])) {
+    unset($_SESSION["editingTask"]);
+    $task = [
+        "task" => $_POST["task"],
+        "name" => $_SESSION["loggedUser"]["name"]
+    ];
+    $controller->connect()->insertTask($task);
+}
+//Delete a task?
+if (isset($_POST["deleteTask"])) {
+    unset($_SESSION["editingTask"]);
+    $controller->connect()->deleteTask($_POST['deleteTask']);
+}
+//Edit a task?
+if (isset($_POST["editTask"])) {
+    unset($_SESSION["editingTask"]);
+    $_SESSION["tasks"] = $controller->connect()->loadAllTasks(); //Prevent conflicts if a refresh is triggered on the edit mode
+    $arrayIndex = array_key_first($_POST); //Fetch the name of the element in the POST array, as it's dynamic
+    $index = strpos($arrayIndex, "-") + 1; //Set the index where first number of id occurs
+    $taskId = substr($arrayIndex, $index); //Extract the number
+    //Store the ID of task being edited
+    $_SESSION["editingTask"] = $taskId;
+
+    //Show only the task we are editing
+    if (gettype($_SESSION["tasks"][$taskId]) === "array") {
+      //per trobar la tasca corresponet i mostrar-la per pantalla creo un bucle:
+      foreach($_SESSION["tasks"] as $task){
+        if($task["id"] == $taskId){
+            $_SESSION["tasks"] = [$task] ; //Show only the task we are editing
+            break;
+        }
+      }
+    } else { //When we are working with Task objects
+        $_SESSION["tasks"] = $controller->connect()->findTask("", "", "", $taskId);
+    }
+}
+
+if (isset($_POST["confirmEdit"])) {
+    unset($_SESSION["editingTask"]);
+
+    if (gettype($_SESSION["tasks"][0]) === "array") {//Working with task as array
+        $controller->connect()->editTask($_SESSION["tasks"][0]["id"], $_POST["task"], $_POST["status"]);
+    } else if (gettype($_SESSION["tasks"][0]) === "object") {//Working with Task objects
+        $controller->connect()->editTask($_SESSION["tasks"][0]->getId(), $_POST["task"], $_POST["status"]);
+    }
+}
+
+header("Location:" . WEB_ROOT . "/welcome");
+exit();
