@@ -93,22 +93,30 @@ include(ROOT_PATH . '/app/views/scripts/header.php');
         }
         //Editing task
         if (isset($_SESSION["editingTask"])) {
+            $editFields = [];
+            if(gettype($_SESSION["tasks"][0]) === "array"){//Working with tasks as arrays
+                $editFields["status"] = $_SESSION["tasks"][0]["status"];
+                $editFields["task"] = $_SESSION["tasks"][0]["task"];
+            } else if (gettype($_SESSION["tasks"][0]) === "object"){//Working with Task objects
+                $editFields["status"] = $_SESSION["tasks"][0]->getStatus();
+                $editFields["task"] = $_SESSION["tasks"][0]->getTask();
+            }
         ?>
             <!--Edit form-->
             <form action="<?= WEB_ROOT . "/process"; ?>" method="post" class="bg-white/40 m-2 p-2 rounded-md shadow shadow-lg">
                 <h2 class="font-bold p-2 m-2 text-3xl font-rock3d">Editar tasca</h2>
                 <div class="flex flex-wrap md:flex-nowrap justify-items-evenly">
                     <span class="hidden lg:inline font-icons text-4xl p-2 col-span-1 justify-right w-[5%]">notes</span>
-                    <textarea name="task" id="" cols="30" rows="5" class="w-full md:w-[70%] resize-none rounded-md p-2 md:m-2 md:mb-0 m-0 font-overpass placeholder:whitespace-normal row-span-2 align-top text-left whitespace-normal shadow shadow-lg" required><?= $_SESSION["tasks"][0]["task"] ?></textarea>
+                    <textarea name="task" id="" cols="30" rows="5" class="w-full md:w-[70%] resize-none rounded-md p-2 md:m-2 md:mb-0 m-0 font-overpass placeholder:whitespace-normal row-span-2 align-top text-left whitespace-normal shadow shadow-lg" required><?= $editFields["task"] ?></textarea>
                     <div class="w-[100%] md:w-[15%] grid grid-rows-2">
                         <select name="status" class="rounded m-2 p-1 w-full mx-auto shadow shadow-lg">
-                            <option value="Pending" <?php if ($_SESSION["tasks"][0]["status"] == "Pending") {
+                            <option value="Pending" <?php if ($editFields["status"] == "Pending") {
                                                         echo "selected";
                                                     } ?>>Pendent</option>
-                            <option value="In progress" <?php if ($_SESSION["tasks"][0]["status"] == "In progress") {
+                            <option value="In progress" <?php if ($editFields["status"] == "In progress") {
                                                             echo "selected";
                                                         } ?>>En curs</option>
-                            <option value="Finished" <?php if ($_SESSION["tasks"][0]["status"] == "Finished") {
+                            <option value="Finished" <?php if ($editFields["status"] == "Finished") {
                                                             echo "selected";
                                                         } ?>>Finalitzada</option>
                         </select>

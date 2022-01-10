@@ -1,6 +1,7 @@
 <?php
 include_once(ROOT_PATH . '/app/controllers/JSONAdapterController.php');
 include_once(ROOT_PATH . '/app/controllers/MySQLAdapterController.php');
+include_once(ROOT_PATH . '/app/controllers/MongoDBAdapterController.php');
 /**
  * Database connection singleton. Receives which type of DB we want to use for the session.
  * @author Albert Garcia
@@ -25,7 +26,8 @@ class DBConnectionController {
             include_once(ROOT_PATH . "/config/db.inc.php");
             DBConnectionController::$connection->db = new MySQLAdapterController($dbh);
         } else if ($database == "mongodb"){
-            //TODO
+            $mongoConnURI = 'mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false';
+            DBConnectionController::$connection->db = new MongoDBAdapterController($mongoConnURI);
         }
         return DBConnectionController::$connection->db;
     }

@@ -9,7 +9,11 @@ class Task {
     private $status;
 
     public function __construct($taskData){
-        $this->id = $taskData["id"];
+        if (isset($taskData["_id"])){
+            $this->id = $taskData["_id"];
+        } else {
+            $this->id = $taskData["id"];
+        }
         $this->timestampStart = $taskData["timestampStart"];
         $this->timestampEnd = $taskData["timestampEnd"];
         $this->task = $taskData["task"];

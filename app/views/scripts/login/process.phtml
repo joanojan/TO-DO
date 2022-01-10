@@ -1,4 +1,4 @@
-<?php 
+<?php
 //Start general app controller
 $controller = new ApplicationController();
 //Check login status
@@ -15,9 +15,9 @@ if (isset($_POST["loadAllTasks"])) {
     $controller->showEmptyTasksMsg();
 }
 //Searching for some task... 
-if (isset($_POST["search"])){
+if (isset($_POST["search"])) {
     unset($_SESSION["editingTask"]);
-    $_SESSION["tasks"] = $controller->connect()->findTask($_POST["task"],$_POST["name"],$_POST["status"]);
+    $_SESSION["tasks"] = $controller->connect()->findTask($_POST["task"], $_POST["name"], $_POST["status"]);
 }
 //Insert new task?
 if (isset($_POST["insertTask"])) {
@@ -42,23 +42,30 @@ if (isset($_POST["editTask"])) {
     $taskId = substr($arrayIndex, $index); //Extract the number
     //Store the ID of task being edited
     $_SESSION["editingTask"] = $taskId;
-    //$_SESSION["tasks"] = [$_SESSION["tasks"][$taskId]];
-    //per trobar la tasca corresponet i mostrar-la per pantalla creo un bucle:
-    foreach($_SESSION["tasks"] as $task){
+
+    //Show only the task we are editing
+    if (gettype($_SESSION["tasks"][$taskId]) === "array") {
+      //per trobar la tasca corresponet i mostrar-la per pantalla creo un bucle:
+      foreach($_SESSION["tasks"] as $task){
         if($task["id"] == $taskId){
             $_SESSION["tasks"] = [$task] ; //Show only the task we are editing
-        //End step in next view: $controller->connect()->editTask($taskId, $task, $status);
             break;
         }
-    }         
+      }
+    } else { //When we are working with Task objects
+        $_SESSION["tasks"] = $controller->connect()->findTask("", "", "", $taskId);
+    }
 }
 
-if(isset($_POST["confirmEdit"])){
+if (isset($_POST["confirmEdit"])) {
     unset($_SESSION["editingTask"]);
 
-    $controller->connect()->editTask($_SESSION["tasks"][0]["id"], $_POST["task"], $_POST["status"]);
+    if (gettype($_SESSION["tasks"][0]) === "array") {//Working with task as array
+        $controller->connect()->editTask($_SESSION["tasks"][0]["id"], $_POST["task"], $_POST["status"]);
+    } else if (gettype($_SESSION["tasks"][0]) === "object") {//Working with Task objects
+        $controller->connect()->editTask($_SESSION["tasks"][0]->getId(), $_POST["task"], $_POST["status"]);
+    }
 }
 
-header("Location:".WEB_ROOT."/welcome");
+header("Location:" . WEB_ROOT . "/welcome");
 exit();
-?>

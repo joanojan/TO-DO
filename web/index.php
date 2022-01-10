@@ -13,6 +13,8 @@ define('ROOT_PATH', realpath(dirname(__FILE__) . '/../'));
 // defines the cms path
 define('CMS_PATH', ROOT_PATH . '/lib/base/');
 
+//It needs to be included before starting the session so objects can be serialised and deserialised in session
+include_once(ROOT_PATH . "/app/models/Task.class.php");
 // starts the session
 session_start();
 
@@ -36,6 +38,9 @@ function autoloader($className) {
 		}
 		else if (file_exists(ROOT_PATH . '/lib/' . $className . '.php')) {
 			require_once ROOT_PATH . '/lib/' . $className . '.php';
+		}
+		else if (file_exists(ROOT_PATH . '/vendor/' . 'autoload.php')) {
+			require_once ROOT_PATH . '/vendor/autoload.php';
 		}
 		else {
 			require_once ROOT_PATH . '/app/models/'.$className.'.php';

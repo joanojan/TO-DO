@@ -59,7 +59,7 @@ unset($_POST);
     <header class="flex flex-nowrap">
         <div class="bg-yellow-600 text-white p-4 py-2 lg:w-[80%] md:w-[60%] w-[50%] text-xl flex items-center shrink">
             <h1 class="text-sm pl-2 ml-2">
-                <span class="font-rock3d text-4xl">TO-DO</span> by A&J v1.0
+                <span class="font-rock3d text-4xl">TO-DO</span> by A&J v3.0
             </h1>
         </div>
         <div class="bg-yellow-600 text-white p-4 py-2 flex place-items-center justify-center lg:w-[10%] md:w-[20%] w-25%">
