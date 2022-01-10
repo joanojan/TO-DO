@@ -8,7 +8,7 @@ include_once(ROOT_PATH . '/app/models/User.class.php');
  */
 class ApplicationController extends Controller
 {
-    private $user; //TODO create user class
+    private $user;
 
     /**
      * Login button on login view calls this function. It receives the username and password as an array $userData.
@@ -20,7 +20,7 @@ class ApplicationController extends Controller
     public function processLogin($userData)
     {
 
-        $conn = $this->connect(); //connects to JSON DB by now. This variable will have access to all methods within the JSONAdapter class
+        $conn = $this->connect(); //connects to DB. This variable will have access to all methods within the (**DB**)Adapter class
 
         if ($conn->checkLoginData($userData)) {
             $this->user = new User($conn->retrieveUserData()); //User class should be able to get all data from here and instantiate the user in the constructor
@@ -95,7 +95,13 @@ class ApplicationController extends Controller
      */
     public function connect()
     {
-        return DBConnectionController::getInstance("JSON");
+        $req = new Request();
+        if($req->getParam('db-type') != null){
+            if(!isset($_SESSION['db-type']) || $_SESSION['db-type'] != $req->getParam('db-type')){
+                $_SESSION['db-type'] = $req->getParam('db-type');
+            }
+        }        
+        return DBConnectionController::getInstance($_SESSION['db-type']);
     }
 
     /**
