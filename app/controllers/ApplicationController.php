@@ -21,7 +21,7 @@ class ApplicationController extends Controller
     public function processLogin($userData)
     {
 
-        $conn = $this->connect(); //connects to JSON DB by now. This variable will have access to all methods within the JSONAdapter class
+        $conn = $this->connect(); //connects to DB. This variable will have access to all methods within the (**DB**)Adapter class
 
         if ($conn->checkLoginData($userData)) {
             $this->user = new User($conn->retrieveUserData()); //User class should be able to get all data from here and instantiate the user in the constructor

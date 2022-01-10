@@ -21,7 +21,10 @@ class DBConnectionController {
         if ($database == "JSON"){
             DBConnectionController::$connection->db = new JSONAdapterController();
         } else if ($database == "mysql") {
-            DBConnectionController::$connection->db = new MySQLAdapterController();
+            //Creo la BD mysql i la inicialitzo si no existeix
+            include_once(ROOT_PATH . "/config/createToDoMySQLDB.php");
+            include_once(ROOT_PATH . "/config/db.inc.php");
+            DBConnectionController::$connection->db = new MySQLAdapterController($dbh);
         } else if ($database == "mongodb"){
             $mongoConnURI = 'mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false';
             DBConnectionController::$connection->db = new MongoDBAdapterController($mongoConnURI);
