@@ -1,3 +1,12 @@
+# TO-DO by Albert Garcia & Joan Vila
+- To access the app, head to .../web/login in your browser.
+**Level 1**
+- Existing users and passwords can be found in web/json/users.json file within the project files.
+**Level 2**
+- Users and passwords remain identical to those in level 1.
+- If necessary, change the config/settings.ini data to match those of your local mysql instance.
+- For testing purposes, there are scripts in the app that will automatically create the necessary databases and populate the users if they are not found in your mysql instance when the app is run and a login is attempted.
+
 # PHP initial Project
 Main structure of php project. Folders / files:
 - **app**

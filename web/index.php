@@ -1,5 +1,7 @@
 <?php
 
+
+
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors', 1);
 date_default_timezone_set('CET');
@@ -25,7 +27,7 @@ function autoloader($className) {
 	// controller autoloading
 	if (strlen($className) > 10 && substr($className, -10) == 'Controller') {
 		if (file_exists(ROOT_PATH . '/app/controllers/' . $className . '.php') == 1) {
-			require_once ROOT_PATH . '/app/controllers/' . $className . '.php';
+		require_once ROOT_PATH . '/app/controllers/' . $className . '.php';
 		}
 	}
 	else {
@@ -46,3 +48,4 @@ spl_autoload_register('autoloader');
 
 $router = new Router();
 $router->execute($routes);
+?>

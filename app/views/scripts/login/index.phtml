@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inici de sessió - TO-DO by A&J</title>
+    <link rel="shortcut icon" href="/web/images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/web/images/favicon/favicon-32x32.png" type="image/png">
+    <link rel="icon" type="image/x-icon" href="/web/images/favicon/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/web/images/favicon/favicon-32x32.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rock+3D&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Overpass&family=Rock+3D&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                fontFamily: {
+                    'rock3d': ['"Rock 3D"'],
+                    'overpass': ['Overpass', 'sans-serif'], //task text
+                    'icons': ['"Material Icons"'], //icons
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[url('../web/images/engin-akyurt-IZj7vckPGiw-unsplash.jpg')] bg-cover bg-center max-w-screen">
+    <div class="flex flex-col justify-center items-center h-screen">
+        <h1 class="text-5xl font-rock3d">TO-DO</h1>
+        <h2 class="mb-4">by Albert&Joan v1.0</h2>
+        <?php
+        //Mostra possibles missatges d'error relacionats amb el login
+        if (isset($_SESSION["errors"])) { ?>
+            <div class="border rounded-md border-red-700 font-bold text-red-700 text-center mx-auto max-w-xs p-2 m-2 opacity-80 bg-white/80 rounded-md shadow shadow-lg">
+                <?php
+                foreach ($_SESSION["errors"] as $missatge) {
+                    echo $missatge . PHP_EOL;
+                }
+                unset($_SESSION["errors"]);
+                ?>
+            </div>
+        <?php
+        }
+        ?>
+        <?php
+        //Mostra possibles missatges relacionats amb el login
+        if (isset($_SESSION["messages"])) { ?>
+            <div class="border rounded-md border-green-700 font-bold text-green-700 text-center mx-auto max-w-xs p-2 m-2 opacity-80 bg-white/80 rounded-md shadow shadow-lg">
+                <?php
+                foreach ($_SESSION["messages"] as $missatge) {
+                    echo $missatge . PHP_EOL;
+                }
+                unset($_SESSION["messages"]);
+                ?>
+            </div>
+        <?php
+        }
+        ?>
+        <h1 class="w-11/12 max-w-xs lg:w-11/12 bg-yellow-500/60 text-2xl text-center font-bold rounded-t-md p-1 font-overpass">Inici de sessió</h1>
+        <form action=<?= WEB_ROOT . "/welcome"; ?> method="post" class="w-11/12 max-w-xs lg:w-11/12 bg-white/40 shadow shadow-lg rounded-b-md px-8 pt-6 pb-8 mb-4">
+            <input type="text" name="username" placeholder="Usuari" required class="shadow appearance-none border rounded w-full py-2 px-3 text-yellow-700 leading-tight focus:outline-none focus:shadow-outline"><br>
+            <input type="password" name="password" placeholder="Contrassenya" required class="my-4 shadow appearance-none border rounded w-full py-2 px-3 text-yellow-700 leading-tight focus:outline-none focus:shadow-outline"><br>
+            <div class="max-w-1/2 flex flex-wrap items-center p-2 m-2 justify-around">
+                <div class="flex flex-nowrap items-center">
+                    <input type="radio" name="db-type" id="db-type-json" value="JSON" checked class="accent-yellow-700"><label for="db-type-json" class=" mr-2 p-2">JSON</label>
+                </div>
+                <div class="flex flex-nowrap items-center">
+                    <input type="radio" name="db-type" id="db-type-mysql" value="mysql" class="accent-yellow-700"><label for="db-type-mysql" class=" mr-2 p-2">MySQL</label>
+                </div>
+                <div class="flex flex-nowrap items-center">
+                    <input type="radio" name="db-type" id="db-type-mongoDB" value="mongodb" disabled class="accent-yellow-700"><label for="db-type-mongoDB" class="p-2">MongoDB</label>
+                </div>
+
+            </div>
+            <button type="submit" name="process-login" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"><span class="font-icons mr-2 align-middle">login</span>Indentificar-se</button>
+        </form>
+
+    </div>
+
+</body>
+
+</html>

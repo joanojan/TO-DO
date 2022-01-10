@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The base controller of the CMS
+ * The base controller of the CMS (Content Managment System 8-)
  */
 class Controller
 {
